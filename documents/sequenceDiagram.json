@@ -1,0 +1,122 @@
+{
+  "key": "sequenceDiagram",
+  "value": [
+    {
+      "id": "1e273402-cfbf-424d-8b19-5701ba21b7a6",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "ファイル取込",
+      "value": "{\n  \"mermaid\": \"sequenceDiagram\\n    actor User\\n    participant Frontend\\n    participant Backend\\n    participant DB\\n    User->>Frontend: 1.CSVファイル選択\\n    Frontend->>Backend: 2.ファイルアップロード要求\\n    Backend->>Backend: 3.CSVファイル形式検証\\n    alt 検証エラー\\n        Backend-->>Frontend: 4a.エラーメッセージ返却\\n        Frontend-->>User: 4b.エラーメッセージ表示\\n    else 検証成功\\n        Backend->>Backend: 5.CSVファイル読み込み・解析\\n        Backend->>DB: 6.解析済みデータ保存\\n        DB-->>Backend: 7.保存完了通知\\n        Backend-->>Frontend: 8.処理完了通知\\n        Frontend-->>User: 9.完了メッセージ表示\\n    end\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:43:37.453Z",
+      "updatedAt": "2025-02-21T13:43:37.453Z",
+      "internalId": "80a7dd29-668b-48c3-aa17-3f2ce5dc2435"
+    },
+    {
+      "id": "55a91a41-209c-4c63-849d-b755aa2af3b3",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "スコアリング",
+      "value": "{\n  \"mermaid\": \"sequenceDiagram\\n    User->>Frontend: 健康診断結果データを選択\\n    Frontend->>Backend: CSVファイルアップロード\\n    Backend->>DB: 健康診断データ取得\\n    DB->>Backend: 健康診断データ\\n    Backend->>Backend: BMIスコア算出\\n    Backend->>Backend: 血圧スコア算出\\n    Backend->>Backend: 血糖値スコア算出\\n    Backend->>Backend: 脂質スコア算出\\n    Backend->>Backend: 肝機能スコア算出\\n    Backend->>Backend: 総スコア算出\\n    Backend->>Backend: BMI評価\\n    Backend->>Backend: 血圧評価\\n    Backend->>Backend: 血糖値評価\\n    Backend->>Backend: 脂質評価\\n    Backend->>Backend: 肝機能評価\\n    Backend->>DB: スコアリング結果保存\\n    DB->>Backend: 保存完了\\n    Backend->>Frontend: スコアリング結果返却\\n    Frontend->>User: スコアリング結果表示\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:43:37.464Z",
+      "updatedAt": "2025-02-21T13:43:37.464Z",
+      "internalId": "a9d502fb-02fb-489c-8f49-e58833b16f9e"
+    },
+    {
+      "id": "014d27b3-0227-4ded-9703-df61f1c2107f",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "データ表示",
+      "value": "{\n  \"mermaid\": \"sequenceDiagram\\n    actor User as 医療従事者\\n    participant Frontend\\n    participant Backend\\n    participant DB\\n\\n    User->>Frontend: データ表示要求\\n    Frontend->>Backend: データ取得リクエスト\\n    Backend->>DB: 健康診断結果データ取得\\n    DB-->>Backend: データ返却\\n    Backend->>Backend: データ処理\\n    Backend-->>Frontend: データ返却\\n\\n    Frontend->>Frontend: グラフ生成\\n    Frontend->>Frontend: 上位抽出リスト生成\\n    Frontend->>Frontend: 評価結果表生成\\n\\n    Frontend-->>User: スコア分布グラフ表示\\n    Frontend-->>User: 上位抽出リスト表示\\n    Frontend-->>User: 評価結果表表示\\n\\n    User->>Frontend: ソート/フィルタ要求\\n    Frontend->>Frontend: データソート/フィルタ処理\\n    Frontend-->>User: 更新データ表示\\n\\n    User->>Frontend: 詳細データ要求\\n    Frontend->>Backend: 詳細データ取得リクエスト\\n    Backend->>DB: 詳細データ取得\\n    DB-->>Backend: データ返却\\n    Backend-->>Frontend: 詳細データ返却\\n    Frontend->>Frontend: 詳細データ表示処理\\n    Frontend-->>User: 詳細データ表示\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:43:37.473Z",
+      "updatedAt": "2025-02-21T13:43:37.473Z",
+      "internalId": "d14952ad-0912-40e3-99c9-f594e820c8ba"
+    },
+    {
+      "id": "1293162c-ae7e-4cbf-8113-265f4f50a2f6",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "UI",
+      "value": "{\n  \"mermaid\": \"sequenceDiagram\\n    autonumber\\n    User->>Frontend: ファイルアップロード操作\\n    Frontend->>User: アップロードUI表示\\n    User->>Frontend: CSVファイルドロップ/選択\\n    Frontend->>Backend: CSVファイルアップロード要求\\n    Backend->>DB: ファイル情報一時保存\\n    DB-->>Backend: 保存完了\\n    Backend->>Backend: CSVファイル形式検証\\n    Backend->>Backend: データパース処理\\n    Backend->>DB: 健康診断結果データ保存\\n    DB-->>Backend: 保存完了\\n    Backend->>Backend: スコアリング処理\\n    Backend->>DB: スコアリング結果保存\\n    DB-->>Backend: 保存完了\\n    Backend->>Backend: 上位抽出処理\\n    Backend->>DB: 上位抽出結果保存\\n    DB-->>Backend: 保存完了\\n    Backend->>Frontend: 処理完了通知\\n    Frontend->>Backend: データ取得要求\\n    Backend->>DB: データ取得\\n    DB-->>Backend: データ返却\\n    Backend->>Frontend: データ送信\\n    Frontend->>User: 分析結果表示\\n    User->>Frontend: グラフ操作\\n    Frontend->>User: インタラクティブグラフ表示\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:43:37.480Z",
+      "updatedAt": "2025-02-21T13:43:37.480Z",
+      "internalId": "8018a063-4270-424a-8b3c-db82e0d3ee32"
+    },
+    {
+      "id": "d6c5987a-7c4a-4289-8500-a2eb396519b6",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "セキュリティ",
+      "value": "{\n  \"mermaid\": \"sequenceDiagram\\n    autonumber\\n    User->>Frontend: CSVファイルをアップロード\\n    Frontend->>Backend: ファイル送信\\n    Backend->>Backend: ウイルスチェック実行\\n    Backend->>Backend: 入力値検証実行\\n    alt 不正検知\\n        Backend-->>Frontend: エラーレスポンス\\n        Frontend-->>User: エラーメッセージ表示\\n    else 正常\\n        Backend->>DB: 検証済みデータ保存\\n        DB-->>Backend: 保存完了\\n        Backend-->>Frontend: 成功レスポンス\\n        Frontend-->>User: アップロード完了表示\\n    end\\n    Note over Backend: 不正な入力を\\n    Note over Backend: システムレベルで排除\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:43:37.489Z",
+      "updatedAt": "2025-02-21T13:43:37.489Z",
+      "internalId": "2262c176-c41e-48e2-a944-a3f5a52aba99"
+    },
+    {
+      "id": "a5862ba9-7c36-487a-9cdc-bf9d0aa0a6ce",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "パラメータ設定",
+      "value": "{\n  \"mermaid\": \"sequenceDiagram\\n    User->>Frontend: パラメータ設定画面を開く\\n    Frontend->>Backend: パラメータ取得リクエスト\\n    Backend->>DB: パラメータ読み込みクエリ\\n    DB-->>Backend: パラメータデータ\\n    Backend-->>Frontend: パラメータデータ\\n    Frontend-->>User: パラメータ設定画面表示\\n    User->>Frontend: 上位抽出割合を入力\\n    Frontend->>Backend: パラメータ更新リクエスト\\n    Backend->>DB: パラメータ更新クエリ\\n    DB-->>Backend: 更新結果\\n    Backend-->>Frontend: 更新完了通知\\n    Frontend-->>User: 設定完了メッセージ表示\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:43:37.499Z",
+      "updatedAt": "2025-02-21T13:43:37.499Z",
+      "internalId": "bb0a4c67-2d18-4ec5-a37e-d92c3d98f79c"
+    },
+    {
+      "id": "5ae3b83b-5366-4830-838b-ad604c5ba932",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "ユーザビリティ",
+      "value": "{\n  \"mermaid\": \"sequenceDiagram\\n    actor User\\n    User->>Frontend: 結果ダウンロードを要求\\n    Frontend->>Backend: ダウンロード形式を送信\\n    Backend->>DB: 処理結果データを取得\\n    DB-->>Backend: データを返却\\n    alt CSVダウンロードの場合\\n        Backend->>Backend: CSVファイル生成\\n        Backend-->>Frontend: CSVファイル返却\\n        Frontend-->>User: CSVファイルダウンロード提供\\n    else PDFダウンロードの場合\\n        Backend->>Backend: PDFファイル生成\\n        Backend-->>Frontend: PDFファイル返却\\n        Frontend-->>User: PDFファイルダウンロード提供\\n    end\\n    User->>Frontend: ファイルダウンロード\\n    Frontend-->>User: ダウンロード完了通知\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:43:37.507Z",
+      "updatedAt": "2025-02-21T13:43:37.507Z",
+      "internalId": "564b843c-deda-45d1-b1fe-35ee894b72c7"
+    },
+    {
+      "id": "18121dbd-2542-44ce-8217-c9afb96e19a9",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "システムフロー",
+      "value": "{\n  \"mermaid\": \"sequenceDiagram\\n    autonumber\\n    User->>Frontend: CSVファイルをアップロード\\n    Frontend->>Backend: ファイル送信\\n    Backend->>Backend: CSVデータパース処理\\n    Backend->>DB: 健康診断データを保存\\n    DB-->>Backend: 保存完了\\n    Backend->>Backend: スコアリング処理\\n    Backend->>Backend: 総スコア分布集計\\n    Backend->>Backend: グラフ用データ作成\\n    Backend->>DB: スコアリング結果保存\\n    DB-->>Backend: 保存完了\\n    Backend->>Backend: 上位抽出処理\\n    Backend->>DB: 抽出結果保存\\n    DB-->>Backend: 保存完了\\n    Backend-->>Frontend: 処理完了通知\\n    Frontend->>DB: 結果データ取得\\n    DB-->>Frontend: データ返却\\n    Frontend->>Frontend: グラフ描画処理\\n    Frontend-->>User: 結果表示\\n    User->>Frontend: 上位抽出割合変更\\n    Frontend->>Backend: 再抽出リクエスト\\n    Backend->>Backend: 再抽出処理\\n    Backend->>DB: 新規抽出結果保存\\n    DB-->>Backend: 保存完了\\n    Backend-->>Frontend: 再抽出完了通知\\n    Frontend->>DB: 更新データ取得\\n    DB-->>Frontend: データ返却\\n    Frontend-->>User: 更新結果表示\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:43:37.514Z",
+      "updatedAt": "2025-02-21T13:43:37.514Z",
+      "internalId": "a949d7dc-622a-4a33-9158-5f2ee61524ee"
+    },
+    {
+      "id": "71b3dd80-cb89-4ec7-be63-a5de6bab3fad",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "ログ",
+      "value": "{\n  \"mermaid\": \"sequenceDiagram\\n    autonumber\\n    actor User\\n    participant Frontend\\n    participant Backend\\n    participant DB\\n\\n    User->>Frontend: ログ検索条件入力\\n    Frontend->>Backend: ログ検索リクエスト\\n    Backend->>DB: ログデータ検索クエリ実行\\n    DB-->>Backend: ログデータ取得結果\\n    Backend-->>Frontend: ログデータ返却\\n    Frontend-->>User: ログ一覧表示\\n\\n    User->>Frontend: ログ詳細表示要求\\n    Frontend->>Backend: ログ詳細データ要求\\n    Backend->>DB: ログ詳細データ取得\\n    DB-->>Backend: ログ詳細データ返却\\n    Backend-->>Frontend: ログ詳細データ返却\\n    Frontend-->>User: ログ詳細表示\\n\\n    User->>Frontend: ログダウンロード要求\\n    Frontend->>Backend: ログダウンロードリクエスト\\n    Backend->>DB: ログデータ全件取得\\n    DB-->>Backend: ログデータ返却\\n    Backend-->>Frontend: ログファイル生成返却\\n    Frontend-->>User: ログファイルダウンロード\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:43:37.524Z",
+      "updatedAt": "2025-02-21T13:43:37.524Z",
+      "internalId": "057a3059-c48d-416b-b8b5-ec4902b86d6d"
+    }
+  ]
+}

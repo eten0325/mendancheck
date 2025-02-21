@@ -1,0 +1,122 @@
+{
+  "key": "screenTransition",
+  "value": [
+    {
+      "id": "b5a7450f-3373-4a16-88ee-0794b9763ac4",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "ファイル取込",
+      "value": "{\n    \"mermaid\": \"graph LR\\n    Login[ログイン画面] --> FileUpload[ファイルアップロード画面]\\n    FileUpload --> FileValidation[ファイル検証画面]\\n    FileValidation --> UploadResult[アップロード結果画面]\\n    FileValidation -->|エラー発生| FileUpload\\n    UploadResult --> FileUpload\\n    UploadResult --> ProcessingStatus[処理状況画面]\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:37:59.873Z",
+      "updatedAt": "2025-02-21T13:37:59.873Z",
+      "internalId": "3a2152a5-ff8c-479a-b96b-a84ea9a23a00"
+    },
+    {
+      "id": "06866429-2a0c-4f3f-802a-676de11561f0",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "スコアリング",
+      "value": "{\n    \"mermaid\": \"graph LR\\n    Login[ログイン画面] --> MainMenu[メインメニュー画面]\\n    MainMenu --> ScoringConfig[スコアリング設定画面]\\n    MainMenu --> ScoringResult[スコアリング結果一覧画面]\\n    ScoringConfig --> BMIRule[BMIスコアリングルール設定]\\n    ScoringConfig --> BPRule[血圧スコアリングルール設定]\\n    ScoringConfig --> GlucoseRule[血糖値スコアリングルール設定]\\n    ScoringConfig --> LipidRule[脂質スコアリングルール設定]\\n    ScoringConfig --> LiverRule[肝機能スコアリングルール設定]\\n    ScoringResult --> DetailView[個別スコア詳細画面]\\n    DetailView --> BMIDetail[BMI評価詳細]\\n    DetailView --> BPDetail[血圧評価詳細]\\n    DetailView --> GlucoseDetail[血糖評価詳細]\\n    DetailView --> LipidDetail[脂質評価詳細]\\n    DetailView --> LiverDetail[肝機能評価詳細]\\n    DetailView --> TotalScore[総合評価結果]\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:37:59.886Z",
+      "updatedAt": "2025-02-21T13:37:59.886Z",
+      "internalId": "33320180-3004-4ff1-a6b9-e51314d05f77"
+    },
+    {
+      "id": "1461ffa3-3a41-4942-a12e-9b820702347d",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "データ表示",
+      "value": "{\n    \"mermaid\": \"graph LR\\n    Login[ログイン画面] --> Main[メイン画面]\\n    Main --> DataUpload[データアップロード画面]\\n    Main --> AnalysisView[分析表示画面]\\n    AnalysisView --> ScoreGraph[スコア分布グラフ画面]\\n    AnalysisView --> TopList[上位抽出リスト画面]\\n    AnalysisView --> DetailView[詳細データ表示画面]\\n    DetailView --> ItemDetail[項目別詳細画面]\\n    TopList --> TopDetail[上位者詳細画面]\\n    AnalysisView --> EvalTable[評価結果一覧画面]\\n    EvalTable --> TableSort[ソート設定画面]\\n    EvalTable --> TableFilter[フィルタ設定画面]\\n    EvalTable --> ScoreDetail[スコア詳細画面]\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:37:59.893Z",
+      "updatedAt": "2025-02-21T13:37:59.893Z",
+      "internalId": "7485f003-394f-400e-ad14-cb156c000ced"
+    },
+    {
+      "id": "e2aac290-c2d2-40eb-99a3-0a0f36759b02",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "UI",
+      "value": "{\n    \"mermaid\": \"graph LR\\n    Login[ログイン画面] --> Main[メイン画面]\\n    Main --> Upload[ファイルアップロード画面]\\n    Main --> Result[分析結果表示画面]\\n    Main --> Settings[設定画面]\\n    Upload --> Processing[処理中画面]\\n    Processing --> Result\\n    Result --> Graph[グラフ詳細画面]\\n    Result --> Download[ダウンロード画面]\\n    Settings --> ColorSettings[色設定画面]\\n    Settings --> ExtractionSettings[上位抽出設定画面]\\n    Result --> List[上位抽出リスト画面]\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:37:59.900Z",
+      "updatedAt": "2025-02-21T13:37:59.900Z",
+      "internalId": "1226108c-99b1-4e63-8c75-d3bdd4a0e7a4"
+    },
+    {
+      "id": "49dd7f75-3b08-48a5-967f-46538bfd2065",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "セキュリティ",
+      "value": "{\n    \"mermaid\": \"graph LR\\n    Login[ログイン画面] --> Main[メイン画面]\\n    Main --> Upload[CSVアップロード画面]\\n    Upload --> Validation[検証結果画面]\\n    Validation --> Error[エラー画面]\\n    Validation --> Success[処理完了画面]\\n    Error --> Upload\\n    Success --> Main\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:37:59.907Z",
+      "updatedAt": "2025-02-21T13:37:59.907Z",
+      "internalId": "0f260d10-2f2c-4839-bd66-b8da6c4c8dd2"
+    },
+    {
+      "id": "65a0eb75-b137-4791-899a-8761bdbc20a3",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "パラメータ設定",
+      "value": "{\n    \"mermaid\": \"graph LR\\n    Login[ログイン画面] --> Menu[メニュー画面]\\n    Menu --> ParamSetting[パラメータ設定画面]\\n    ParamSetting --> EditParam[上位抽出割合編集画面]\\n    EditParam --> Confirm[設定変更確認画面]\\n    Confirm --> Complete[設定変更完了画面]\\n    Complete --> Menu\\n    EditParam --> ParamSetting\\n    Complete --> ParamSetting\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:37:59.915Z",
+      "updatedAt": "2025-02-21T13:37:59.915Z",
+      "internalId": "c6618971-ef9c-4da2-ab99-da6e505faf3b"
+    },
+    {
+      "id": "1ba936df-810a-48fd-b25e-6e0355fd37e4",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "ユーザビリティ",
+      "value": "{\n  \"mermaid\": \"graph LR\\n    Login[ログイン画面] --> Top[トップメニュー画面]\\n    Top --> Upload[健康診断データアップロード画面]\\n    Upload --> Result[処理結果表示画面]\\n    Result --> Download[ダウンロード選択画面]\\n    Download --> CSV[CSV形式ダウンロード]\\n    Download --> PDF[PDF形式ダウンロード]\\n    Result --> Analysis[分析結果表示画面]\\n    Analysis --> Download\\n    Top --> UserGuide[操作ガイド画面]\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:37:59.921Z",
+      "updatedAt": "2025-02-21T13:37:59.921Z",
+      "internalId": "0a8c129b-4b43-40df-8dc2-df39f1f82e94"
+    },
+    {
+      "id": "eaae83a4-734b-4f7a-8e1b-7695f98e6dec",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "システムフロー",
+      "value": "{\n  \"mermaid\": \"graph LR\\n    login[ログイン画面] --> main[メイン画面]\\n    main --> upload[CSVアップロード画面]\\n    upload --> result[分析結果画面]\\n    result --> graph[グラフ表示画面]\\n    result --> list[評価結果一覧画面]\\n    result --> extract[上位抽出画面]\\n    graph --> download[ダウンロード画面]\\n    list --> download\\n    extract --> download\\n    extract --> setting[抽出設定画面]\\n    setting --> extract\\n    graph --> setting\\n    list --> setting\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:37:59.929Z",
+      "updatedAt": "2025-02-21T13:37:59.929Z",
+      "internalId": "7398a26d-e24d-4409-96b9-cd68b98002fd"
+    },
+    {
+      "id": "79629e98-753f-43c3-8c1b-1f9c93d93018",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "ログ",
+      "value": "{\n  \"mermaid\": \"graph LR\\n    Login[ログイン画面] --> Admin[管理者画面]\\n    Admin --> LogList[ログ一覧画面]\\n    LogList --> LogDetail[ログ詳細画面]\\n    LogList --> LogDownload[ログダウンロード]\\n    LogDetail --> LogSearch[ログ検索フォーム]\\n    LogSearch --> LogList\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:37:59.940Z",
+      "updatedAt": "2025-02-21T13:37:59.940Z",
+      "internalId": "8fcbc3ff-2fd2-4021-abdc-1d05961d2f91"
+    }
+  ]
+}

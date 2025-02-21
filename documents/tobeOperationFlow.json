@@ -1,0 +1,70 @@
+{
+  "key": "tobeOperationFlow",
+  "value": [
+    {
+      "id": "a577dde1-80a0-497a-af11-4330604dfe0a",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "健康診断結果データの取り込み機能",
+      "value": "{\n  \"mermaid\": \"sequenceDiagram\\n    actor User as 医療担当者\\n    participant UI as Web UI\\n    participant API as APIサーバ\\n    participant Process as 処理サーバ\\n    participant Storage as ファイルストレージ\\n    participant DB as データベース\\n\\n    User->>UI: CSVファイルをアップロード\\n    UI->>API: ファイル送信\\n    API->>API: ウイルスチェック\\n    API->>Storage: 一時ファイル保存\\n    API->>Process: 処理開始通知\\n    Process->>Storage: ファイル取得\\n    Process->>Process: ファイル形式検証\\n    Process->>Process: カラム構成検証\\n    Process->>Process: 入力値バリデーション\\n    Process->>Process: データパース処理\\n    Process->>Process: スコアリング処理\\n    Process->>Process: 総スコア計算\\n    Process->>DB: 処理結果保存\\n    Process->>API: 処理完了通知\\n    API->>UI: 処理完了応答\\n    UI->>User: 処理完了表示\\n    UI->>API: 結果データリクエスト\\n    API->>DB: 結果データ取得\\n    API->>UI: 結果データ送信\\n    UI->>UI: グラフ生成\\n    UI->>UI: 上位抽出処理\\n    UI->>User: 分析結果表示\\n    User->>UI: 結果ダウンロード要求\\n    UI->>API: ダウンロードリクエスト\\n    API->>DB: データ取得\\n    API->>API: CSV/PDF生成\\n    API->>UI: ファイル送信\\n    UI->>User: ダウンロード\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:35:41.001Z",
+      "updatedAt": "2025-02-21T13:35:41.001Z",
+      "internalId": "ac4fd507-5fd1-4e90-8d39-2e912f13414b"
+    },
+    {
+      "id": "00065c11-d5b4-41c3-8ded-566048cecf70",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "スコアリング処理機能",
+      "value": "{\n  \"mermaid\": \"sequenceDiagram\\n    participant User as 医療従事者\\n    participant Web as Webアプリ\\n    participant Backend as バックエンド\\n    participant DB as データベース\\n    User->>Web: CSVファイルアップロード\\n    Web->>Backend: CSVデータ送信\\n    Backend->>Backend: ウイルスチェック\\n    Backend->>Backend: ファイルフォーマット検証\\n    Backend->>Backend: データパース処理\\n    Backend->>Backend: 入力値バリデーション\\n    Backend->>Backend: BMIスコアリング\\n    Backend->>Backend: 血圧スコアリング\\n    Backend->>Backend: 血糖スコアリング\\n    Backend->>Backend: 脂質スコアリング\\n    Backend->>Backend: 肝機能スコアリング\\n    Backend->>Backend: 総スコア計算\\n    Backend->>DB: 評価結果保存\\n    Backend->>Backend: スコア分布集計\\n    Backend->>Backend: 上位抽出処理\\n    Backend->>Web: 評価結果返却\\n    Web->>Web: グラフデータ生成\\n    Web->>Web: インタラクティブグラフ描画\\n    Web->>User: 評価結果表示\\n    Web->>User: スコア分布グラフ表示\\n    Web->>User: 上位抽出リスト表示\\n    User->>Web: CSVダウンロード要求\\n    Web->>Backend: ダウンロードデータ要求\\n    Backend->>DB: データ取得\\n    Backend->>Web: CSVデータ返却\\n    Web->>User: CSVダウンロード\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:35:41.012Z",
+      "updatedAt": "2025-02-21T13:35:41.012Z",
+      "internalId": "3011d29a-37d8-4447-bfd7-5e41c4aa0c67"
+    },
+    {
+      "id": "708f0f4e-1461-4730-a8d4-ccfd17e3628d",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "データ分析・可視化機能",
+      "value": "{\n  \"mermaid\": \"sequenceDiagram\\n    actor User as 医療従事者\\n    participant UI as Webインターフェース\\n    participant API as APIサーバー\\n    participant Calc as 計算エンジン\\n    participant Storage as データストレージ\\n    participant Cache as キャッシュ\\n    User->>UI: CSVファイルアップロード\\n    UI->>API: ファイル送信\\n    API->>API: ウイルスチェック\\n    API->>API: フォーマット検証\\n    API->>Calc: データ解析要求\\n    Calc->>Calc: データパース\\n    Calc->>Calc: BMIスコアリング\\n    Calc->>Calc: 血圧スコアリング\\n    Calc->>Calc: 血糖値スコアリング\\n    Calc->>Calc: 脂質スコアリング\\n    Calc->>Calc: 肝機能スコアリング\\n    Calc->>Calc: 総スコア算出\\n    Calc->>Storage: 結果保存\\n    Calc->>Cache: 分析結果キャッシュ\\n    Calc->>API: 処理完了通知\\n    API->>UI: 分析結果送信\\n    UI->>UI: グラフ描画\\n    UI->>UI: 色分け表示処理\\n    UI->>User: 分析結果表示\\n    User->>UI: 上位抽出条件変更\\n    UI->>API: 条件変更リクエスト\\n    API->>Cache: キャッシュデータ取得\\n    Cache->>API: データ返却\\n    API->>Calc: 再集計要求\\n    Calc->>UI: 更新データ送信\\n    UI->>UI: 表示更新\\n    UI->>User: 結果表示\\n    User->>UI: CSV/PDFダウンロード要求\\n    UI->>API: エクスポート要求\\n    API->>Storage: データ取得\\n    Storage->>API: データ返却\\n    API->>API: ファイル生成\\n    API->>User: ファイル出力\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:35:41.018Z",
+      "updatedAt": "2025-02-21T13:35:41.018Z",
+      "internalId": "ab0f6110-8b1b-44ca-b7d6-4299e787dc80"
+    },
+    {
+      "id": "53a2879f-b64a-4aff-b0ef-c746d2e350a0",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "上位抽出機能",
+      "value": "{\n  \"mermaid\": \"sequenceDiagram\\n    actor User as 医療従事者\\n    participant Web as Webブラウザ\\n    participant App as アプリケーション\\n    participant Cache as キャッシュ\\n    participant DB as データベース\\n    \\n    User->>Web: 上位抽出割合設定画面を開く\\n    Web->>App: 現在の設定値を要求\\n    App->>Cache: キャッシュから設定値確認\\n    alt キャッシュに存在\\n        Cache-->>App: キャッシュから設定値取得\\n    else キャッシュになし\\n        App->>DB: DBから設定値取得\\n        DB-->>App: 設定値を返却\\n        App->>Cache: 設定値をキャッシュ保存\\n    end\\n    App-->>Web: 設定値を表示\\n    User->>Web: 上位抽出割合を変更\\n    Web->>App: 新しい抽出割合を送信\\n    App->>App: 入力値バリデーション\\n    App->>Cache: 健康診断データをキャッシュ確認\\n    alt キャッシュにデータ存在\\n        Cache-->>App: キャッシュからデータ取得\\n    else キャッシュにデータなし\\n        App->>DB: DBからデータ取得\\n        DB-->>App: データを返却\\n        App->>Cache: データをキャッシュ保存\\n    end\\n    App->>App: 総スコアに基づき上位抽出\\n    App->>DB: 新しい設定値を保存\\n    App->>Cache: 新しい設定値をキャッシュ更新\\n    App-->>Web: 抽出結果を返却\\n    Web-->>User: 上位該当者リストを表示\\n    Web-->>User: 処理完了メッセージを表示\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:35:41.026Z",
+      "updatedAt": "2025-02-21T13:35:41.026Z",
+      "internalId": "0de68c6f-e358-40a0-bc88-6a796372af1c"
+    },
+    {
+      "id": "e20c3d9a-8f85-4eb5-8835-23dd66998114",
+      "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+      "category": "レポート出力機能",
+      "value": "{\n  \"mermaid\": \"sequenceDiagram\\n    actor User as 医療従事者\\n    participant UI as Webアプリケーション\\n    participant Backend as バックエンド\\n    participant DB as データベース\\n    participant Storage as ストレージ\\n    \\n    User->>UI: CSVファイルアップロード\\n    UI->>Backend: ファイル送信\\n    Backend->>Backend: ウイルスチェック\\n    Backend->>Backend: CSVフォーマット検証\\n    Backend->>Backend: データパース\\n    Backend->>Backend: データ検証\\n    Backend->>Backend: スコアリング処理実行\\n    Backend->>DB: 評価結果保存\\n    Backend->>Backend: 集計データ作成\\n    Backend->>UI: 処理結果返却\\n    UI->>User: 結果表示 グラフ描画\\n    \\n    rect rgb(200, 200, 200)\\n    Note right of User: レポート生成フロー\\n    User->>UI: レポート形式選択(CSV/PDF)\\n    UI->>Backend: レポート生成要求\\n    Backend->>DB: データ取得\\n    Backend->>Backend: レポートデータ生成\\n    Backend->>Storage: レポートファイル保存\\n    Backend->>UI: ダウンロードURL返却\\n    UI->>User: ダウンロードリンク表示\\n    User->>Storage: レポートダウンロード\\n    end\\n    \\n    rect rgb(200, 200, 200)\\n    Note right of User: 再集計フロー\\n    User->>UI: 上位抽出条件設定\\n    UI->>Backend: 条件に基づく再集計要求\\n    Backend->>DB: データ取得\\n    Backend->>Backend: 条件に基づく再集計\\n    Backend->>UI: 再集計結果返却\\n    UI->>User: 更新結果表示\\n    end\"\n}",
+      "phase": 1,
+      "version": 1,
+      "status": "published",
+      "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+      "createdAt": "2025-02-21T13:35:41.034Z",
+      "updatedAt": "2025-02-21T13:35:41.034Z",
+      "internalId": "0ca32cc0-f196-4341-8353-667e225c872a"
+    }
+  ]
+}

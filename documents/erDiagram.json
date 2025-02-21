@@ -1,0 +1,15 @@
+{
+  "key": "erDiagram",
+  "value": {
+    "id": "531ba2ee-e452-45be-a965-b48238151f04",
+    "projectId": "6aa42787-0c5f-4f77-a56b-ad046553a245",
+    "mermaid": "erDiagram\n    health_check_results {\n        UUID id PK\n        VARCHAR user_id\n        FLOAT8 bmi\n        INTEGER systolic_blood_pressure\n        INTEGER diastolic_blood_pressure\n        FLOAT8 blood_sugar\n        FLOAT8 hba1c\n        FLOAT8 ldl_cholesterol\n        FLOAT8 tg\n        INTEGER ast\n        INTEGER alt\n        INTEGER gamma_gtp\n        INTEGER bmi_score\n        INTEGER blood_pressure_score\n        INTEGER blood_sugar_score\n        INTEGER lipid_score\n        INTEGER liver_function_score\n        INTEGER total_score\n        VARCHAR bmi_evaluation\n        VARCHAR blood_pressure_evaluation\n        VARCHAR blood_sugar_evaluation\n        VARCHAR lipid_evaluation\n        VARCHAR liver_function_evaluation\n        TIMESTAMP created_at\n        TIMESTAMP updated_at\n    }\n    settings {\n        UUID id PK\n        VARCHAR setting_key\n        JSONB setting_value\n        TEXT description\n        TIMESTAMP created_at\n        TIMESTAMP updated_at\n    }\n    logs {\n        UUID id PK\n        TIMESTAMP timestamp\n        VARCHAR log_level\n        TEXT message\n    }\n    extracted_ids {\n        UUID id PK\n        VARCHAR user_id\n        INTEGER total_score\n        TIMESTAMP extracted_at\n    }\n\n    health_check_results ||--o{ extracted_ids : has\n    health_check_results ||--o{ logs : generates",
+    "phase": 1,
+    "version": 1,
+    "status": "published",
+    "lastUpdatedBy": "044e6361-5852-435e-9e0e-990ef176ad8f",
+    "createdAt": "2025-02-21T13:37:27.739Z",
+    "updatedAt": "2025-02-21T13:37:27.739Z",
+    "internalId": "47b714d0-1494-4291-8a26-b45b1f40ccc0"
+  }
+}
