@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/router';
+import { createBrowserClient } from '@supabase/ssr';
 import { FaUser, FaLock } from 'react-icons/fa';
 import Link from 'next/link';
 
@@ -9,26 +9,31 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
-  const supabase = createClientComponentClient();
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email: userId,
         password: password,
       });
 
-      if (error) {
-        setError(error.message);
-      } else {
-        // ログイン成功時の処理
+      if (signInError) {
+        console.error('ログインエラー:', signInError);
+        setError(signInError.message);
+      } else if (data?.user) {
         console.log('ログイン成功:', data);
-        router.push('/main'); // メイン画面にリダイレクト
+        // ログイン成功時の処理
+        await router.push('/mainmenu');
       }
     } catch (err: any) {
+      console.error('エラー:', err);
       setError(err.message || 'ログイン中にエラーが発生しました。');
     }
   };
@@ -51,6 +56,7 @@ const LoginPage = () => {
               placeholder="メールアドレスを入力してください"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
+              autoComplete="email"
             />
           </div>
           <div className="mb-6">
@@ -65,6 +71,7 @@ const LoginPage = () => {
               placeholder="パスワードを入力してください"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
             />
           </div>
           <div className="flex items-center justify-between">

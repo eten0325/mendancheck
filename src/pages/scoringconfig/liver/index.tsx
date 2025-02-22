@@ -1,227 +1,117 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { supabase } from '@/supabase';
-import { Layout } from '@/components/Layout';
+import React from 'react';
+import Layout from '@/components/Layout';
 
-const LiverFunctionScoringRuleSetting = () => {
-    const [astRange, setAstRange] = useState({
-        min: '',
-        max: '',
-        score: '',
-    });
-    const [altRange, setAltRange] = useState({
-        min: '',
-        max: '',
-        score: '',
-    });
-    const [gammaGtpRange, setGammaGtpRange] = useState({
-        min: '',
-        max: '',
-        score: '',
-    });
-
-    const handleAstChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setAstRange(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleAltChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setAltRange(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleGammaGtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setGammaGtpRange(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleSubmit = async () => {
-        try {
-            const { data, error } = await supabase
-                .from('settings')
-                .upsert([
-                    {
-                        setting_key: 'ast_range',
-                        setting_value: astRange,
-                    },
-                    {
-                        setting_key: 'alt_range',
-                        setting_value: altRange,
-                    },
-                    {
-                        setting_key: 'gamma_gtp_range',
-                        setting_value: gammaGtpRange,
-                    },
-                ]);
-
-            if (error) {
-                console.error('設定の保存エラー:', error);
-                alert('設定の保存中にエラーが発生しました。');
-            } else {
-                alert('設定が保存されました。');
-            }
-        } catch (error) {
-            console.error('設定の保存エラー:', error);
-            alert('設定の保存中にエラーが発生しました。');
-        }
-    };
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const { data: astData, error: astError } = await supabase
-                    .from('settings')
-                    .select('setting_value')
-                    .eq('setting_key', 'ast_range')
-                    .single();
-
-                const { data: altData, error: altError } = await supabase
-                    .from('settings')
-                    .select('setting_value')
-                    .eq('setting_key', 'alt_range')
-                    .single();
-
-                const { data: gammaGtpData, error: gammaGtpError } = await supabase
-                    .from('settings')
-                    .select('setting_value')
-                    .eq('setting_key', 'gamma_gtp_range')
-                    .single();
-
-                if (astError) {
-                    console.error('AST範囲の取得エラー:', astError);
-                } else if (astData && astData.setting_value) {
-                    setAstRange(astData.setting_value);
-                }
-
-                if (altError) {
-                    console.error('ALT範囲の取得エラー:', altError);
-                } else if (altData && altData.setting_value) {
-                    setAltRange(altData.setting_value);
-                }
-
-                if (gammaGtpError) {
-                    console.error('γGTP範囲の取得エラー:', gammaGtpError);
-                } else if (gammaGtpData && gammaGtpData.setting_value) {
-                    setGammaGtpRange(gammaGtpData.setting_value);
-                }
-
-            } catch (error) {
-                console.error('データ取得エラー:', error);
-                alert('データの取得中にエラーが発生しました。');
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    return (
-        <Layout>
-            <div className="container mx-auto p-4 min-h-screen h-full">
-                <h1 className="text-2xl font-bold mb-4">肝機能スコアリングルール設定</h1>
-
-                <div className="mb-4">
-                    <h2 className="text-lg font-semibold mb-2">AST範囲</h2>
-                    <div className="flex space-x-2">
-                        <input
-                            type="number"
-                            name="min"
-                            value={astRange.min}
-                            onChange={handleAstChange}
-                            placeholder="最小値"
-                            className="border p-2 rounded w-1/3"
-                            data-testid="ast-min"
-                        />
-                        <input
-                            type="number"
-                            name="max"
-                            value={astRange.max}
-                            onChange={handleAstChange}
-                            placeholder="最大値"
-                            className="border p-2 rounded w-1/3"
-                            data-testid="ast-max"
-                        />
-                        <input
-                            type="number"
-                            name="score"
-                            value={astRange.score}
-                            onChange={handleAstChange}
-                            placeholder="スコア"
-                            className="border p-2 rounded w-1/3"
-                            data-testid="ast-score"
-                        />
-                    </div>
-                </div>
-
-                <div className="mb-4">
-                    <h2 className="text-lg font-semibold mb-2">ALT範囲</h2>
-                    <div className="flex space-x-2">
-                        <input
-                            type="number"
-                            name="min"
-                            value={altRange.min}
-                            onChange={handleAltChange}
-                            placeholder="最小値"
-                            className="border p-2 rounded w-1/3"
-                            data-testid="alt-min"
-                        />
-                        <input
-                            type="number"
-                            name="max"
-                            value={altRange.max}
-                            onChange={handleAltChange}
-                            placeholder="最大値"
-                            className="border p-2 rounded w-1/3"
-                            data-testid="alt-max"
-                        />
-                        <input
-                            type="number"
-                            name="score"
-                            value={altRange.score}
-                            onChange={handleAltChange}
-                            placeholder="スコア"
-                            className="border p-2 rounded w-1/3"
-                            data-testid="alt-score"
-                        />
-                    </div>
-                </div>
-
-                <div className="mb-4">
-                    <h2 className="text-lg font-semibold mb-2">γGTP範囲</h2>
-                    <div className="flex space-x-2">
-                        <input
-                            type="number"
-                            name="min"
-                            value={gammaGtpRange.min}
-                            onChange={handleGammaGtpChange}
-                            placeholder="最小値"
-                            className="border p-2 rounded w-1/3"
-                            data-testid="gamma-gtp-min"
-                        />
-                        <input
-                            type="number"
-                            name="max"
-                            value={gammaGtpRange.max}
-                            onChange={handleGammaGtpChange}
-                            placeholder="最大値"
-                            className="border p-2 rounded w-1/3"
-                            data-testid="gamma-gtp-max"
-                        />
-                        <input
-                            type="number"
-                            name="score"
-                            value={gammaGtpRange.score}
-                            onChange={handleGammaGtpChange}
-                            placeholder="スコア"
-                            className="border p-2 rounded w-1/3"
-                            data-testid="gamma-gtp-score"
-                        />
-                    </div>
-                </div>
-
-                <button onClick={handleSubmit} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" data-testid="save-button">保存</button>
-            </div>
-        </Layout>
-    );
+// 肝機能スコアリングの定数
+const LIVER_THRESHOLDS = {
+  AST: {
+    A: { max: 31, score: 1, color: 'bg-green-100' },
+    B: { max: 35, score: 2, color: 'bg-yellow-100' },
+    C: { max: 50, score: 4, color: 'bg-orange-100' },
+    D: { max: Infinity, score: 8, color: 'bg-red-100' }
+  },
+  ALT: {
+    A: { max: 31, score: 1, color: 'bg-green-100' },
+    B: { max: 40, score: 2, color: 'bg-yellow-100' },
+    C: { max: 50, score: 4, color: 'bg-orange-100' },
+    D: { max: Infinity, score: 8, color: 'bg-red-100' }
+  },
+  GTP: {
+    A: { max: 51, score: 1, color: 'bg-green-100' },
+    B: { max: 80, score: 2, color: 'bg-yellow-100' },
+    C: { max: 100, score: 4, color: 'bg-orange-100' },
+    D: { max: Infinity, score: 8, color: 'bg-red-100' }
+  }
 };
 
-export default LiverFunctionScoringRuleSetting;
+const ScoringConfigLiver = () => {
+  return (
+    <Layout>
+      <div className="min-h-screen h-full bg-gray-100 py-6">
+        <div className="container mx-auto px-4">
+          <h1 className="text-2xl font-bold mb-8">肝機能スコアリングルール</h1>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* AST */}
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">AST</h2>
+              <div className="space-y-4">
+                <div className={`p-4 rounded-lg ${LIVER_THRESHOLDS.AST.A.color}`}>
+                  <h3 className="font-semibold">評価A（1点）</h3>
+                  <p>AST &lt; 31</p>
+                </div>
+                <div className={`p-4 rounded-lg ${LIVER_THRESHOLDS.AST.B.color}`}>
+                  <h3 className="font-semibold">評価B（2点）</h3>
+                  <p>31 ≦ AST &lt; 35</p>
+                </div>
+                <div className={`p-4 rounded-lg ${LIVER_THRESHOLDS.AST.C.color}`}>
+                  <h3 className="font-semibold">評価C（4点）</h3>
+                  <p>35 ≦ AST &lt; 50</p>
+                </div>
+                <div className={`p-4 rounded-lg ${LIVER_THRESHOLDS.AST.D.color}`}>
+                  <h3 className="font-semibold">評価D（8点）</h3>
+                  <p>50 ≦ AST</p>
+                </div>
+              </div>
+            </div>
+
+            {/* ALT */}
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">ALT</h2>
+              <div className="space-y-4">
+                <div className={`p-4 rounded-lg ${LIVER_THRESHOLDS.ALT.A.color}`}>
+                  <h3 className="font-semibold">評価A（1点）</h3>
+                  <p>ALT &lt; 31</p>
+                </div>
+                <div className={`p-4 rounded-lg ${LIVER_THRESHOLDS.ALT.B.color}`}>
+                  <h3 className="font-semibold">評価B（2点）</h3>
+                  <p>31 ≦ ALT &lt; 40</p>
+                </div>
+                <div className={`p-4 rounded-lg ${LIVER_THRESHOLDS.ALT.C.color}`}>
+                  <h3 className="font-semibold">評価C（4点）</h3>
+                  <p>40 ≦ ALT &lt; 50</p>
+                </div>
+                <div className={`p-4 rounded-lg ${LIVER_THRESHOLDS.ALT.D.color}`}>
+                  <h3 className="font-semibold">評価D（8点）</h3>
+                  <p>50 ≦ ALT</p>
+                </div>
+              </div>
+            </div>
+
+            {/* γ-GTP */}
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">γ-GTP</h2>
+              <div className="space-y-4">
+                <div className={`p-4 rounded-lg ${LIVER_THRESHOLDS.GTP.A.color}`}>
+                  <h3 className="font-semibold">評価A（1点）</h3>
+                  <p>γ-GTP &lt; 51</p>
+                </div>
+                <div className={`p-4 rounded-lg ${LIVER_THRESHOLDS.GTP.B.color}`}>
+                  <h3 className="font-semibold">評価B（2点）</h3>
+                  <p>51 ≦ γ-GTP &lt; 80</p>
+                </div>
+                <div className={`p-4 rounded-lg ${LIVER_THRESHOLDS.GTP.C.color}`}>
+                  <h3 className="font-semibold">評価C（4点）</h3>
+                  <p>80 ≦ γ-GTP &lt; 100</p>
+                </div>
+                <div className={`p-4 rounded-lg ${LIVER_THRESHOLDS.GTP.D.color}`}>
+                  <h3 className="font-semibold">評価D（8点）</h3>
+                  <p>100 ≦ γ-GTP</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">評価方法</h2>
+            <p className="text-gray-700">
+              AST、ALT、γ-GTPのそれぞれで評価を行い、
+              最も高い（リスクが大きい）評価点を採用します。
+            </p>
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
+};
+
+export default ScoringConfigLiver;

@@ -24,7 +24,7 @@ const ScoringConfig = () => {
               <div className="divide-y divide-gray-200">
                 <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
                   <div className="flex justify-center">
-                    <button className={buttonStyle} onClick={() => router.push('/bmi-scoring')}>BMIスコアリングルール設定</button>
+                    <button className={buttonStyle} onClick={() => router.push('/scoringconfig/bmi')}>BMIスコアリングルール設定</button>
                   </div>
                   <div className="flex justify-center">
                     <button className={buttonStyle} onClick={() => router.push('/blood-pressure-scoring')}>血圧スコアリングルール設定</button>

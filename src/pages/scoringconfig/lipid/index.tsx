@@ -1,144 +1,83 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Layout } from '@/components/Layout';
-import axios from 'axios';
+import React from 'react';
+import Layout from '@/components/Layout';
 
-const LipidScoringRuleSetting = () => {
-  const router = useRouter();
-  const [ldlRange, setLdlRange] = useState({
-    min: '',
-    max: '',
-  });
-  const [tgRange, setTgRange] = useState({
-    min: '',
-    max: '',
-  });
-  const [score, setScore] = useState('');
-  const [settings, setSettings] = useState(null);
+// 脂質スコアリングの定数
+const LIPID_THRESHOLDS = {
+  LDL: {
+    A: { max: 120, score: 1, color: 'bg-green-100' },
+    B: { max: 140, score: 2, color: 'bg-yellow-100' },
+    C: { max: 180, score: 4, color: 'bg-orange-100' },
+    D: { max: Infinity, score: 8, color: 'bg-red-100' }
+  },
+  TG: {
+    A: { max: 150, score: 1, color: 'bg-green-100' },
+    B: { max: 300, score: 2, color: 'bg-yellow-100' },
+    C: { max: 500, score: 4, color: 'bg-orange-100' },
+    D: { max: Infinity, score: 8, color: 'bg-red-100' }
+  }
+};
 
-  useEffect(() => {
-    // Fetch initial settings data
-    const fetchSettings = async () => {
-      try {
-        const response = await axios.get('/api/settings');
-        setSettings(response.data);
-      } catch (error) {
-        console.error('設定データの取得エラー:', error);
-        // Fallback data for demonstration purposes
-        setSettings({
-          ldl: { min: 80, max: 140, score: 2 },
-          tg: { min: 30, max: 150, score: 3 },
-        });
-      }
-    };
-
-    fetchSettings();
-  }, []);
-
-  const handleLdlChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'min' | 'max') => {
-    setLdlRange({ ...ldlRange, [type]: e.target.value });
-  };
-
-  const handleTgChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'min' | 'max') => {
-    setTgRange({ ...tgRange, [type]: e.target.value });
-  };
-
-  const handleScoreChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setScore(e.target.value);
-  };
-
-  const handleSave = async () => {
-    try {
-      const response = await axios.post('/api/settings', {
-        ldlRange,
-        tgRange,
-        score,
-      });
-
-      if (response.data.success) {
-        alert('保存に成功しました。');
-      } else {
-        alert('保存に失敗しました。');
-      }
-    } catch (error) {
-      console.error('保存エラー:', error);
-      alert('保存エラー');
-    }
-  };
-
+const ScoringConfigLipid = () => {
   return (
     <Layout>
-      <div className="min-h-screen h-full bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-        <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
-          <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-            <div className="max-w-md mx-auto">
-              <div>
-                <h1 className="text-2xl font-semibold">脂質スコアリングルール設定</h1>
-              </div>
-              <div className="divide-y divide-gray-200">
-                <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                  <div className="flex flex-col space-y-2">
-                    <label htmlFor="ldl-min">LDLコレステロール 最小値:</label>
-                    <input
-                      type="number"
-                      id="ldl-min"
-                      value={ldlRange.min}
-                      onChange={(e) => handleLdlChange(e, 'min')}
-                      className="px-4 py-2 border rounded-md focus:ring focus:ring-blue-200 outline-none"
-                    />
-                  </div>
-                  <div className="flex flex-col space-y-2">
-                    <label htmlFor="ldl-max">LDLコレステロール 最大値:</label>
-                    <input
-                      type="number"
-                      id="ldl-max"
-                      value={ldlRange.max}
-                      onChange={(e) => handleLdlChange(e, 'max')}
-                      className="px-4 py-2 border rounded-md focus:ring focus:ring-blue-200 outline-none"
-                    />
-                  </div>
-                  <div className="flex flex-col space-y-2">
-                    <label htmlFor="tg-min">TG 最小値:</label>
-                    <input
-                      type="number"
-                      id="tg-min"
-                      value={tgRange.min}
-                      onChange={(e) => handleTgChange(e, 'min')}
-                      className="px-4 py-2 border rounded-md focus:ring focus:ring-blue-200 outline-none"
-                    />
-                  </div>
-                  <div className="flex flex-col space-y-2">
-                    <label htmlFor="tg-max">TG 最大値:</label>
-                    <input
-                      type="number"
-                      id="tg-max"
-                      value={tgRange.max}
-                      onChange={(e) => handleTgChange(e, 'max')}
-                      className="px-4 py-2 border rounded-md focus:ring focus:ring-blue-200 outline-none"
-                    />
-                  </div>
-                  <div className="flex flex-col space-y-2">
-                    <label htmlFor="score">スコア:</label>
-                    <input
-                      type="number"
-                      id="score"
-                      value={score}
-                      onChange={handleScoreChange}
-                      className="px-4 py-2 border rounded-md focus:ring focus:ring-blue-200 outline-none"
-                    />
-                  </div>
+      <div className="min-h-screen h-full bg-gray-100 py-6">
+        <div className="container mx-auto px-4">
+          <h1 className="text-2xl font-bold mb-8">脂質スコアリングルール</h1>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* LDLコレステロール */}
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">LDLコレステロール</h2>
+              <div className="space-y-4">
+                <div className={`p-4 rounded-lg ${LIPID_THRESHOLDS.LDL.A.color}`}>
+                  <h3 className="font-semibold">評価A（1点）</h3>
+                  <p>LDL &lt; 120</p>
                 </div>
-                <div className="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7">
-                  <button
-                    onClick={handleSave}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  >
-                    保存
-                  </button>
+                <div className={`p-4 rounded-lg ${LIPID_THRESHOLDS.LDL.B.color}`}>
+                  <h3 className="font-semibold">評価B（2点）</h3>
+                  <p>120 ≦ LDL &lt; 140</p>
+                </div>
+                <div className={`p-4 rounded-lg ${LIPID_THRESHOLDS.LDL.C.color}`}>
+                  <h3 className="font-semibold">評価C（4点）</h3>
+                  <p>140 ≦ LDL &lt; 180</p>
+                </div>
+                <div className={`p-4 rounded-lg ${LIPID_THRESHOLDS.LDL.D.color}`}>
+                  <h3 className="font-semibold">評価D（8点）</h3>
+                  <p>180 ≦ LDL</p>
                 </div>
               </div>
             </div>
+
+            {/* 中性脂肪 */}
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-semibold mb-4">中性脂肪（TG）</h2>
+              <div className="space-y-4">
+                <div className={`p-4 rounded-lg ${LIPID_THRESHOLDS.TG.A.color}`}>
+                  <h3 className="font-semibold">評価A（1点）</h3>
+                  <p>TG &lt; 150</p>
+                </div>
+                <div className={`p-4 rounded-lg ${LIPID_THRESHOLDS.TG.B.color}`}>
+                  <h3 className="font-semibold">評価B（2点）</h3>
+                  <p>150 ≦ TG &lt; 300</p>
+                </div>
+                <div className={`p-4 rounded-lg ${LIPID_THRESHOLDS.TG.C.color}`}>
+                  <h3 className="font-semibold">評価C（4点）</h3>
+                  <p>300 ≦ TG &lt; 500</p>
+                </div>
+                <div className={`p-4 rounded-lg ${LIPID_THRESHOLDS.TG.D.color}`}>
+                  <h3 className="font-semibold">評価D（8点）</h3>
+                  <p>500 ≦ TG</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">評価方法</h2>
+            <p className="text-gray-700">
+              LDLコレステロールと中性脂肪（TG）のそれぞれで評価を行い、
+              より高い（リスクが大きい）方の評価点を採用します。
+            </p>
           </div>
         </div>
       </div>
@@ -146,4 +85,4 @@ const LipidScoringRuleSetting = () => {
   );
 };
 
-export default LipidScoringRuleSetting;
+export default ScoringConfigLipid;
