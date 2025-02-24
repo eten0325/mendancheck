@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Database } from '@/../supabase/types';
+import { Database } from '@/types/supabase';
 import { toast } from 'react-hot-toast';
 
 const ColorSettings = () => {
