@@ -10,13 +10,6 @@ const nextConfig = {
     // 必要に応じてwebpack設定をカスタマイズ
     return config;
   },
-  // APIのタイムアウト設定
-  api: {
-    bodyParser: {
-      sizeLimit: '1mb',
-    },
-    responseLimit: '8mb',
-  },
   // 環境変数の設定
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
