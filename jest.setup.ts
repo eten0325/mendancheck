@@ -29,17 +29,20 @@ jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 // Next.js の Router モック
+type PushMock = (url: string, as?: string, options?: Record<string, unknown>) => Promise<boolean>;
+type PrefetchMock = (url: string, as?: string, options?: Record<string, unknown>) => Promise<void>;
+
 interface MockedNextRouter extends NextRouter {
   pathname: string;
 }
 
 const mockRouter: MockedNextRouter = {
-  push: jest.fn().mockResolvedValue(true),
-  replace: jest.fn().mockResolvedValue(true),
+  push: jest.fn<PushMock>().mockResolvedValue(true),
+  replace: jest.fn<PushMock>().mockResolvedValue(true),
   back: jest.fn(),
   forward: jest.fn(),
   refresh: jest.fn(),
-  prefetch: jest.fn().mockResolvedValue(undefined),
+  prefetch: jest.fn<PrefetchMock>().mockResolvedValue(undefined),
   pathname: '/test-path',
   basePath: '',
   route: '/',
