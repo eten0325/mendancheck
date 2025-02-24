@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals';
 import axios from 'axios';
+import { NextRouter } from 'next/router';
 
 // Fetch のモック
 global.fetch = jest.fn(
@@ -28,7 +29,11 @@ jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 // Next.js の Router モック
-const mockRouter = {
+interface MockedNextRouter extends NextRouter {
+  pathname: string;
+}
+
+const mockRouter: MockedNextRouter = {
   push: jest.fn(),
   replace: jest.fn(),
   back: jest.fn(),
@@ -36,6 +41,16 @@ const mockRouter = {
   refresh: jest.fn(),
   prefetch: jest.fn(),
   pathname: '/test-path',
+  basePath: '',
+  route: '/',
+  asPath: '/',
+  query: {},
+  isLocaleDomain: false,
+  isReady: true,
+  locale: 'ja',
+  locales: ['ja'],
+  defaultLocale: 'ja',
+  events: { emit: jest.fn(), off: jest.fn(), on: jest.fn() },
 };
 
 jest.mock('next/navigation', () => ({
