@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Layout from '@/components/Layout';
 
 const ResultDisplay = () => {
-  return (
+        return (
     <Layout>
       <div className="min-h-screen bg-gray-100 py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -66,7 +66,7 @@ const ResultDisplay = () => {
                         良好
                       </span>
                     </div>
-                  </div>
+                </div>
                   <div className="mt-2">
                     <div className="text-sm text-gray-500">
                       総合スコア: 85点 - すべての項目で基準値内に収まっています。特に血圧と血糖値の数値が理想的な範囲です。
@@ -190,7 +190,7 @@ const ResultDisplay = () => {
         </div>
       </div>
     </Layout>
-  );
+    );
 };
 
 export default ResultDisplay;

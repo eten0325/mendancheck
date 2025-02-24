@@ -23,14 +23,14 @@ const LogsIndex: NextPage = () => {
           // Display sample data in case of an error
           setLogs([
             {
-              id: 'sample-1',
-              timestamp: new Date(),
+              id: 1,
+              timestamp: new Date().toISOString(),
               log_level: 'ERROR',
               message: 'Failed to fetch logs from database.',
             },
             {
-              id: 'sample-2',
-              timestamp: new Date(),
+              id: 2,
+              timestamp: new Date().toISOString(),
               log_level: 'INFO',
               message: 'Using sample data instead.',
             },
@@ -43,8 +43,8 @@ const LogsIndex: NextPage = () => {
         // Display sample data in case of an unexpected error
         setLogs([
           {
-            id: 'sample-3',
-            timestamp: new Date(),
+            id: 3,
+            timestamp: new Date().toISOString(),
             log_level: 'CRITICAL',
             message: 'An unexpected error occurred.',
           },
