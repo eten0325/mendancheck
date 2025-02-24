@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Layout } from '../../components/Layout';
-import { Header } from '../../components/Header';
+import Layout from '@/components/Layout';
+import Header from '@/components/Header';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 const ItemDetail = () => {
