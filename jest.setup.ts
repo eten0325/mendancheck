@@ -7,38 +7,31 @@ type MockedNextRouter = NextRouter & {
 };
 
 // Next.jsのrouterのモック
-const createMockRouter = (props: Partial<MockedNextRouter> = {}): MockedNextRouter => ({
-  basePath: '',
-  pathname: '/test-path',
-  route: '/test-path',
-  asPath: '/test-path',
-  query: {} as ParsedUrlQuery,
-  push: jest.fn(() => Promise.resolve(true)),
-  replace: jest.fn(() => Promise.resolve(true)),
-  reload: jest.fn(),
+const mockRouter: NextRouter = {
+  push: jest.fn(),
+  replace: jest.fn(),
   back: jest.fn(),
   forward: jest.fn(),
-  prefetch: jest.fn(() => Promise.resolve()),
+  reload: jest.fn(),
   beforePopState: jest.fn(),
+  isFallback: false,
+  isPreview: false,
   events: {
     on: jest.fn(),
     off: jest.fn(),
     emit: jest.fn(),
   },
-  isFallback: false,
-  isLocaleDomain: false,
-  isReady: true,
-  isPreview: false,
-  locale: undefined,
-  locales: undefined,
-  defaultLocale: undefined,
-  domainLocales: undefined,
-  ...props,
-});
+  pathname: '/test-path',
+  route: '/test-path',
+  asPath: '/test-path',
+  basePath: '',
+  query: {}, // ここを追加
+};
+
 
 // Next.jsのrouterモックを設定
 jest.mock('next/router', () => ({
-  useRouter: () => createMockRouter(),
+  useRouter: () => mockRouter,
 }));
 
 // Supabaseのモック
