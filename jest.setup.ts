@@ -2,13 +2,25 @@ import { jest } from '@jest/globals';
 import axios from 'axios';
 
 // Fetch のモック
-global.fetch = jest.fn(() => Promise.resolve({
-  json: () => Promise.resolve({}),
-  text: () => Promise.resolve(""),
-  ok: true,
-  status: 200,
-  statusText: "OK",
-})) as jest.Mock;
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    json: () => Promise.resolve({}),
+    text: () => Promise.resolve(""),
+    ok: true,
+    status: 200,
+    statusText: "OK",
+    headers: new Headers(),
+    clone: () => Promise.resolve({} as Response),
+    body: null,
+    bodyUsed: false,
+    arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
+    blob: () => Promise.resolve(new Blob()),
+    formData: () => Promise.resolve(new FormData()),
+    redirect: () => new Response(),
+    type: 'default' as ResponseType,
+    url: '',
+  } as Response)
+) as jest.Mock;
 
 // Axios のモック
 jest.mock('axios');
