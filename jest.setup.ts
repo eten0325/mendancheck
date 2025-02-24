@@ -1,0 +1,22 @@
+const mockRouter: NextRouter = {
+  basePath: '',
+  pathname: '/',
+  route: '/',
+  asPath: '/',
+  query: {},
+  events: {
+    on: jest.fn(),
+    off: jest.fn(),
+    emit: jest.fn(),
+  },
+  isFallback: false,
+  isLocaleDomain: false,
+  isReady: true,
+  isPreview: false,
+  push: jest.fn().mockImplementation(async (_url) => true),
+  replace: jest.fn().mockImplementation(async (_url) => true),
+  back: jest.fn(),
+  forward: jest.fn(),
+  reload: jest.fn(),
+  beforePopState: jest.fn(),
+}; 
