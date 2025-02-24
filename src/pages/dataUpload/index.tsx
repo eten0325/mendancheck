@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useDropzone } from 'react-dropzone';
 import { FaFileUpload } from 'react-icons/fa';
-import { Layout, Header } from '../components/commonComponents';
+import Layout from '@/components/Layout';
 import axios from 'axios';
 
 const DataUpload = () => {
@@ -61,7 +61,6 @@ const DataUpload = () => {
 
   return (
     <Layout>
-      <Header />
       <div className="min-h-screen h-full bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
