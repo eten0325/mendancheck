@@ -81,7 +81,7 @@ const LogSearchForm = () => {
                   <DatePicker
                     id="startDate"
                     selected={startDate}
-                    onChange={(date: Date) => setStartDate(date)}
+                    onChange={(date: Date | null) => setStartDate(date)}
                     dateFormat="yyyy-MM-dd"
                     className="w-full mt-2 px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholderText="開始日を選択"
@@ -92,7 +92,7 @@ const LogSearchForm = () => {
                   <DatePicker
                     id="endDate"
                     selected={endDate}
-                    onChange={(date: Date) => setEndDate(date)}
+                    onChange={(date: Date | null) => setEndDate(date)}
                     dateFormat="yyyy-MM-dd"
                     className="w-full mt-2 px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholderText="終了日を選択"
