@@ -1,12 +1,15 @@
 import '@testing-library/jest-dom';
-import { NextRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 
 type MockedNextRouter = NextRouter & {
   // ほかに拡張したいプロパティがあれば追加
 };
 
-// Next.jsのrouterのモック
+// jest.setup.ts
+import { jest } from '@jest/globals';
+import { NextRouter } from 'next/router';
+
+// Next.js の router のモック
 const mockRouter: NextRouter = {
   push: jest.fn(),
   replace: jest.fn(),
@@ -16,6 +19,7 @@ const mockRouter: NextRouter = {
   beforePopState: jest.fn(),
   isFallback: false,
   isPreview: false,
+  isLocaleDomain: false, // 追加
   events: {
     on: jest.fn(),
     off: jest.fn(),
@@ -23,11 +27,38 @@ const mockRouter: NextRouter = {
   },
   pathname: '/test-path',
   route: '/test-path',
+  query: {},
   asPath: '/test-path',
   basePath: '',
-  query: {}, // ここを追加
 };
 
+if (process.env.NODE_ENV === 'test') {
+  jest.mock('next/router', () => ({
+    useRouter: () => mockRouter,
+    usePathname: jest.fn(),
+    useSearchParams: jest.fn(),
+    useParams: jest.fn(),
+    push: jest.fn(),
+    replace: jest.fn(),
+    back: jest.fn(),
+    forward: jest.fn(),
+    reload: jest.fn(),
+    beforePopState: jest.fn(),
+    isFallback: false,
+    isPreview: false,
+    isLocaleDomain: false,
+    events: {
+      on: jest.fn(),
+      off: jest.fn(),
+      emit: jest.fn(),    
+    },
+    pathname: '/test-path',
+    route: '/test-path',
+    query: {},
+    asPath: '/test-path',
+    basePath: '',
+  }));
+}     
 
 // Next.jsのrouterモックを設定
 jest.mock('next/router', () => ({
