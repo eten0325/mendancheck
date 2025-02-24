@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import Header from './Header';
-import Footer from './Footer';
+import Header from '@/components/Header';
+import Layout from '@/components/Layout';
 
 const Download = () => {
     const router = useRouter();
@@ -15,7 +15,7 @@ const Download = () => {
     };
 
     return (
-        <div className="min-h-screen h-full flex flex-col">
+        <Layout>
             <Header />
             <main className="flex-grow container mx-auto py-6 px-4">
                 <h1 className="text-3xl font-semibold mb-4">ダウンロード選択画面</h1>
@@ -35,8 +35,7 @@ const Download = () => {
                     </button>
                 </div>
             </main>
-            <Footer />
-        </div>
+        </Layout>
     );
 };
 
