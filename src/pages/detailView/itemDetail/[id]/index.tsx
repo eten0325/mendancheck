@@ -4,10 +4,29 @@ import Layout from '@/components/Layout';
 import Header from '@/components/Header';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
+interface HealthData {
+  id: string;
+  bmi: number;
+  systolic_blood_pressure: number;
+  diastolic_blood_pressure: number;
+  blood_sugar: number;
+  hba1c: number;
+  ldl_cholesterol: number;
+  tg: number;
+  ast: number;
+  alt: number;
+  gamma_gtp: number;
+  bmi_evaluation: string;
+  blood_pressure_evaluation: string;
+  blood_sugar_evaluation: string;
+  lipid_evaluation: string;
+  liver_function_evaluation: string;
+}
+
 const ItemDetail = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [healthData, setHealthData] = useState(null);
+  const [healthData, setHealthData] = useState<HealthData | null>(null);
   const supabase = createClientComponentClient();
 
   useEffect(() => {
