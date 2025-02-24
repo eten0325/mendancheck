@@ -5,7 +5,8 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey); 
 
-interface MockedNextRouter extends NextRouter {
-  pathname: string;
-  refresh: () => void;
-} 
+// ↓ このインターフェース定義を削除してください。
+// interface MockedNextRouter extends NextRouter {
+//   pathname: string;
+//   refresh: () => void;
+// } 
