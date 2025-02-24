@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '@/components/Layout';
 import { createClient } from '@supabase/supabase-js';
+import { Database } from '@/types/supabase';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
