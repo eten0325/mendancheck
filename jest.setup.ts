@@ -1,6 +1,14 @@
 import { jest } from '@jest/globals';
-import axios from 'axios';
 import { NextRouter } from 'next/router';
+
+// NODE_ENV が "test" の場合にのみモックを適用
+if (process.env.NODE_ENV === 'test') {
+  jest.mock('next/router', () => ({
+    useRouter: () => mockRouter,
+    usePathname: jest.fn(),
+    useSearchParams: jest.fn(() => new URLSearchParams()),
+  }));
+}
 
 // Fetch のモック
 global.fetch = jest.fn(
@@ -44,16 +52,16 @@ const mockRouter: MockedNextRouter = {
   replace: jest.fn<PushMock>().mockResolvedValue(true),
   back: jest.fn(),
   forward: jest.fn(),
-  reload: jest.fn(),              // 追加
-  beforePopState: jest.fn(),      // 追加
-  isFallback: false,              // 追加（通常は boolean）
-  isPreview: false,               // 追加（通常は boolean）
+  reload: jest.fn(),
+  beforePopState: jest.fn(),
+  isFallback: false,
+  isPreview: false,
   events: {
     on: jest.fn(),
     off: jest.fn(),
     emit: jest.fn(),
   },
-  pathname: '/test-path',         // 既存のプロパティも必要なら追加
+  pathname: '/test-path',
   route: '/test-path',
   query: {},
   asPath: '/test-path',
@@ -78,7 +86,7 @@ declare global {
     }
   }
   var mockNextRouter: typeof mockRouter;
-  var axios: typeof mockedAxios;
+  var axios: any;
 }
 
 global.mockNextRouter = mockRouter;
