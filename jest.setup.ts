@@ -11,17 +11,17 @@ global.fetch = jest.fn(
       status: 200,
       statusText: "OK",
       headers: new Headers(),
-      clone: () => Promise.resolve({} as Response),
+      redirected: false,
+      type: 'default' as ResponseType,
+      url: '',
       body: null,
       bodyUsed: false,
+      clone: () => Promise.resolve({} as Response),
       arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
       blob: () => Promise.resolve(new Blob()),
       formData: () => Promise.resolve(new FormData()),
-      redirect: () => new Response(),
-      type: 'default' as ResponseType,
-      url: '',
-    } as Response)
-) as unknown as jest.Mock<Promise<Response>>;
+    } as unknown as Response)
+) as jest.MockedFunction<typeof fetch>;
 
 // Axios のモック
 jest.mock('axios');
