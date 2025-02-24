@@ -59,7 +59,7 @@ const mockRouter: MockedNextRouter = {
   asPath: '/test-path',
   basePath: '',
   isLocaleDomain: false,
-  prefetch: jest.fn<PrefetchMock>().mockResolvedValue(Promise.resolve()),
+  prefetch: jest.fn<PrefetchMock>().mockResolvedValue(undefined),
   isReady: true,
 };
 
