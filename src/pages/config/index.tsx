@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Layout } from './Layout';
+import Layout from '@/components/Layout';
 import axios from 'axios';
 
 const Config = () => {
