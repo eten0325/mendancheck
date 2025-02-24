@@ -35,6 +35,7 @@ const mockRouter = {
   forward: jest.fn(),
   refresh: jest.fn(),
   prefetch: jest.fn(),
+  pathname: '/test-path',
 };
 
 jest.mock('next/navigation', () => ({
