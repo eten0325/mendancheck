@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Database } from '@/../types/supabase';
+import { Database } from '@/types/supabase';
 
 const LogDetailPage = () => {
-  const [log, setLog] = useState<Database['public']['Tables']['logs']['Row'] | null>(null);
+  const [log, setLog] = useState<Database['public']['Tables']['health_check_results']['Row'] | null>(null);
   const router = useRouter();
   const { logId } = router.query;
   const supabase = createClientComponentClient<Database>();
@@ -15,7 +15,7 @@ const LogDetailPage = () => {
       if (logId) {
         try {
           const { data, error } = await supabase
-            .from('logs')
+            .from('health_check_results')
             .select('*')
             .eq('id', logId)
             .single();
@@ -25,9 +25,15 @@ const LogDetailPage = () => {
             // Fallback data
             setLog({
               id: 'fallback-id',
-              timestamp: new Date().toISOString(),
-              log_level: 'ERROR',
-              message: 'ログの取得に失敗しました。', 
+              user_id: '',
+              total_score: 0,
+              bmi: 0,
+              bmi_evaluation: '',
+              systolic_blood_pressure: 0,
+              diastolic_blood_pressure: 0,
+              bp_evaluation: '',
+              blood_sugar: 0,
+              created_at: new Date().toISOString(),
             });
           } else {
             setLog(data);
@@ -37,17 +43,29 @@ const LogDetailPage = () => {
           // Fallback data
           setLog({
             id: 'fallback-id',
-            timestamp: new Date().toISOString(),
-            log_level: 'ERROR',
-            message: 'ログの取得中に予期しないエラーが発生しました。',
+            user_id: '',
+            total_score: 0,
+            bmi: 0,
+            bmi_evaluation: '',
+            systolic_blood_pressure: 0,
+            diastolic_blood_pressure: 0,
+            bp_evaluation: '',
+            blood_sugar: 0,
+            created_at: new Date().toISOString(),
           });
         }
       } else {
            setLog({
             id: 'fallback-id',
-            timestamp: new Date().toISOString(),
-            log_level: 'INFO',
-            message: 'ログIDが指定されていません。',
+            user_id: '',
+            total_score: 0,
+            bmi: 0,
+            bmi_evaluation: '',
+            systolic_blood_pressure: 0,
+            diastolic_blood_pressure: 0,
+            bp_evaluation: '',
+            blood_sugar: 0,
+            created_at: new Date().toISOString(),
           });
       }
     };
@@ -95,9 +113,7 @@ const LogDetailPage = () => {
 
           {log ? (
             <div data-testid="log-detail-screen">
-              <p><strong>タイムスタンプ:</strong> {new Date(log.timestamp).toLocaleString()}</p>
-              <p><strong>ログレベル:</strong> {log.log_level}</p>
-              <p><strong>メッセージ:</strong> {log.message}</p>
+              <p><strong>タイムスタンプ:</strong> {new Date(log.created_at).toLocaleString()}</p>
             </div>
           ) : (
             <p>ログを読み込み中...</p>
