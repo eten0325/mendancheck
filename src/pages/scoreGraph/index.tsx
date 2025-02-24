@@ -1,76 +1,105 @@
-import React, { useState, useEffect } from 'react';
-import { Layout } from './Layout';
-import { Header } from './Header';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/router';
+import Layout from '@/components/Layout';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+interface ScoreData {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor: string[];
+  }[];
+}
 
 const ScoreGraph = () => {
-    const [data, setData] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const supabase = createClientComponentClient();
+  const router = useRouter() as any;
+  const [scoreData, setScoreData] = useState<ScoreData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const { data: health_check_results, error } = await supabase
-                    .from('health_check_results')
-                    .select('total_score');
+  const fetchScoreData = useCallback(async () => {
+    try {
+      const { data: { session }, error: authError } = await supabase.auth.getSession();
+      
+      if (authError || !session) {
+        router.push('/login');
+        return;
+      }
 
-                if (error) {
-                    throw error;
-                }
+      const { data, error } = await supabase
+        .from('health_check_results')
+        .select('total_score')
+        .order('created_at', { ascending: false })
+        .limit(100);
 
-                if (health_check_results) {
-                    setData(health_check_results);
-                }
-            } catch (e: any) {
-                setError(e.message);
-            } finally {
-                setLoading(false);
-            }
-        };
+      if (error) throw error;
 
-        fetchData();
-    }, []);
+      if (data) {
+        const scores = data.map(item => item.total_score);
+        const labels = Array.from({ length: scores.length }, (_, i) => `データ${i + 1}`);
 
-    if (loading) {
-        return (
-            <Layout>
-                <Header />
-                <div className="min-h-screen h-full flex items-center justify-center">
-                    <p>Loading...</p>
-                </div>
-            </Layout>
-        );
+        setScoreData({
+          labels,
+          datasets: [
+            {
+              label: '総合スコア',
+              data: scores,
+              backgroundColor: Array(scores.length).fill('rgba(54, 162, 235, 0.5)'),
+            },
+          ],
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching score data:', error);
+    } finally {
+      setLoading(false);
     }
+  }, [router]);
 
-    if (error) {
-        return (
-            <Layout>
-                <Header />
-                <div className="min-h-screen h-full flex items-center justify-center">
-                    <p>Error: {error}</p>
-                </div>
-            </Layout>
-        );
-    }
+  useEffect(() => {
+    fetchScoreData();
+  }, [fetchScoreData]);
 
+  if (loading) {
     return (
-        <Layout>
-            <Header />
-            <div className="min-h-screen h-full p-4">
-                <h1 className="text-2xl font-bold mb-4">スコア分布グラフ</h1>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {data.map((item, index) => (
-                        <div key={index} className="bg-white rounded-lg shadow-md p-4">
-                            <p className="text-lg">Total Score: {item.total_score}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </Layout>
+      <Layout>
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+        </div>
+      </Layout>
     );
+  }
+
+  return (
+    <Layout>
+      <div className="min-h-screen bg-gray-100 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+            <div className="p-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">スコア分布グラフ</h2>
+              {scoreData ? (
+                <div className="relative h-96">
+                  {/* グラフ表示エリア */}
+                  <div className="absolute inset-0">
+                    {/* ここにグラフライブラリを使用してグラフを描画 */}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex justify-center items-center h-96">
+                  <p className="text-gray-500">データが見つかりません</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
 };
 
 export default ScoreGraph;
