@@ -5,9 +5,9 @@ import { ParsedUrlQuery } from 'querystring';
 // Next.jsのrouterのモック
 const createMockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
   basePath: '',
-  pathname: '/',
-  route: '/',
-  asPath: '/',
+  pathname: '/test-path',
+  route: '/test-path',
+  asPath: '/test-path',
   query: {} as ParsedUrlQuery,
   push: jest.fn(() => Promise.resolve(true)),
   replace: jest.fn(() => Promise.resolve(true)),
