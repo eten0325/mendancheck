@@ -4,10 +4,29 @@ import Layout from '@/components/Layout';
 import Header from '@/components/Header';
 import { supabase } from '@/utils/supabase';
 
+interface HealthData {
+  id: string;
+  bmi: number;
+  systolic_blood_pressure: number;
+  diastolic_blood_pressure: number;
+  blood_sugar: number;
+  hba1c: number;
+  ldl_cholesterol: number;
+  tg: number;
+  ast: number;
+  alt: number;
+  gamma_gtp: number;
+  bmi_evaluation: string;
+  blood_pressure_evaluation: string;
+  blood_sugar_evaluation: string;
+  lipid_evaluation: string;
+  liver_function_evaluation: string;
+}
+
 const DetailView = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<HealthData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const id = searchParams.get('id');
