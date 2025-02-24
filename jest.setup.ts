@@ -63,7 +63,7 @@ const mockRouter: MockedNextRouter = {
   isReady: true,
 };
 
-jest.mock('next/navigation', () => ({
+jest.mock('next/router', () => ({
   useRouter: () => mockRouter,
   usePathname: jest.fn(),
   useSearchParams: jest.fn(() => new URLSearchParams()),
