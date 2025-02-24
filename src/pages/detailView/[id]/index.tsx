@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Layout } from '../../components/Layout';
-import { Header } from '../../components/Header';
-import { supabase } from '../../supabase';
+import Layout from '@/components/Layout';
+import Header from '@/components/Header';
+import { supabase } from '@/utils/supabase';
 
 const DetailView = () => {
   const router = useRouter();
