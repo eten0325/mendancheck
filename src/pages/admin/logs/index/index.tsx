@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Database } from '@/../supabase/types';
+import { Database } from '@/supabase/types';
 
 const LogsIndex: NextPage = () => {
   const [logs, setLogs] = useState<Database['public']['Tables']['logs']['Row'][]>([]);
