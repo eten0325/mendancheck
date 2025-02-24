@@ -34,12 +34,12 @@ interface MockedNextRouter extends NextRouter {
 }
 
 const mockRouter: MockedNextRouter = {
-  push: jest.fn(),
-  replace: jest.fn(),
+  push: jest.fn().mockResolvedValue(true),
+  replace: jest.fn().mockResolvedValue(true),
   back: jest.fn(),
   forward: jest.fn(),
   refresh: jest.fn(),
-  prefetch: jest.fn(),
+  prefetch: jest.fn().mockResolvedValue(undefined),
   pathname: '/test-path',
   basePath: '',
   route: '/',
