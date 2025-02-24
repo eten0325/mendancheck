@@ -1,87 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Layout from '@/components/Layout';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { FaArrowLeft } from 'react-icons/fa';
-import Link from 'next/link';
+import { createClient } from '@supabase/supabase-js';
 
-const Liver = () => {
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+interface LiverResult {
+  ast: number;
+  alt: number;
+  gtp: number;
+  evaluation: string;
+}
+
+const LiverResultPage = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [healthCheckResult, setHealthCheckResult] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const supabase = createClientComponentClient();
+  const [result, setResult] = useState<LiverResult | null>(null);
 
-  useEffect(() => {
-    if (id) {
-      fetchHealthCheckResult(id);
-    }
-  }, [id]);
+  const fetchHealthCheckResult = useCallback(async () => {
+    if (!id) return;
 
-  const fetchHealthCheckResult = async (id) => {
-    setLoading(true);
     try {
       const { data, error } = await supabase
         .from('health_check_results')
-        .select('*')
+        .select('ast, alt, gtp, liver_evaluation')
         .eq('id', id)
         .single();
 
-      if (error) {
-        console.error('Supabase error:', error);
-        setError('肝機能評価情報の取得に失敗しました。');
-      }
+      if (error) throw error;
 
       if (data) {
-        setHealthCheckResult(data);
+        setResult({
+          ast: data.ast,
+          alt: data.alt,
+          gtp: data.gtp,
+          evaluation: data.liver_evaluation,
+        });
       }
-
-      if (!data) {
-        setError('肝機能評価情報はありません。');
-      }
-    } catch (err) {
-      console.error('Unexpected error:', err);
-      setError('肝機能評価情報の取得に失敗しました。');
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching health check result:', error);
     }
-  };
+  }, [id]);
 
-  const handleRetry = () => {
-    if (id) {
-      fetchHealthCheckResult(id);
-    }
-  };
+  useEffect(() => {
+    fetchHealthCheckResult();
+  }, [fetchHealthCheckResult]);
 
-  if (loading) {
+  if (!result) {
     return (
       <Layout>
-        <div className="min-h-screen h-full flex items-center justify-center">
-          <p>ロード中...</p>
-        </div>
-      </Layout>
-    );
-  }
-
-  if (error) {
-    return (
-      <Layout>
-        <div className="min-h-screen h-full flex flex-col items-center justify-center">
-          <p className="text-red-500">{error}</p>
-          <button onClick={handleRetry} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4" role="button">
-            リトライ
-          </button>
-        </div>
-      </Layout>
-    );
-  }
-
-  if (!healthCheckResult) {
-    return (
-      <Layout>
-        <div className="min-h-screen h-full flex items-center justify-center">
-          <p>肝機能評価情報はありません。</p>
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
         </div>
       </Layout>
     );
@@ -89,57 +62,93 @@ const Liver = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen h-full p-4">
-        <Link href="/scoringresult" legacyBehavior>
-            <a className="flex items-center text-blue-500 hover:text-blue-700">
-                <FaArrowLeft className="mr-2" />
-                戻る
-            </a>
-        </Link>
-        <h1 className="text-2xl font-bold mb-4">肝機能評価詳細</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <h2 className="text-xl font-semibold mb-2">検査結果</h2>
-            <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="py-2 px-4 border-b">項目</th>
-                  <th className="py-2 px-4 border-b">値</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td data-testid="ast-label" className="py-2 px-4 border-b">AST</td>
-                  <td data-testid="ast-value" className="py-2 px-4 border-b">{healthCheckResult.ast}</td>
-                </tr>
-                <tr>
-                  <td data-testid="alt-label" className="py-2 px-4 border-b">ALT</td>
-                  <td data-testid="alt-value" className="py-2 px-4 border-b">{healthCheckResult.alt}</td>
-                </tr>
-                <tr>
-                  <td data-testid="gamma-gtp-label" className="py-2 px-4 border-b">γGTP</td>
-                  <td data-testid="gamma-gtp-value"  className="py-2 px-4 border-b">{healthCheckResult.gamma_gtp}</td>
-                </tr>
-              </tbody>
-            </table>
+      <div className="min-h-screen bg-gray-100 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-gray-800">肝機能検査結果</h2>
+                <Image
+                  src="/icons/liver.png"
+                  alt="肝機能"
+                  width={32}
+                  height={32}
+                  className="text-gray-400"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* AST */}
+                <div className="bg-white p-6 rounded-lg shadow">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">AST</h3>
+                  <div className="text-3xl font-bold text-indigo-600 mb-2">
+                    {result.ast} <span className="text-sm text-gray-500">U/L</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div
+                      className="bg-indigo-600 h-2.5 rounded-full"
+                      style={{ width: `${(result.ast / 50) * 100}%` }}
+                    ></div>
+                  </div>
+                </div>
+
+                {/* ALT */}
+                <div className="bg-white p-6 rounded-lg shadow">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">ALT</h3>
+                  <div className="text-3xl font-bold text-indigo-600 mb-2">
+                    {result.alt} <span className="text-sm text-gray-500">U/L</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div
+                      className="bg-indigo-600 h-2.5 rounded-full"
+                      style={{ width: `${(result.alt / 50) * 100}%` }}
+                    ></div>
+                  </div>
+                </div>
+
+                {/* γ-GTP */}
+                <div className="bg-white p-6 rounded-lg shadow">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">γ-GTP</h3>
+                  <div className="text-3xl font-bold text-indigo-600 mb-2">
+                    {result.gtp} <span className="text-sm text-gray-500">U/L</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div
+                      className="bg-indigo-600 h-2.5 rounded-full"
+                      style={{ width: `${(result.gtp / 100) * 100}%` }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 総合評価 */}
+              <div className="mt-8 bg-gray-50 p-6 rounded-lg">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">総合評価</h3>
+                <div className="flex items-center">
+                  <div className={`text-2xl font-bold ${
+                    result.evaluation === 'A' ? 'text-green-600' :
+                    result.evaluation === 'B' ? 'text-yellow-600' :
+                    result.evaluation === 'C' ? 'text-orange-600' :
+                    'text-red-600'
+                  }`}>
+                    {result.evaluation}
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm text-gray-600">
+                      {result.evaluation === 'A' ? '正常範囲内です。現在の生活習慣を維持してください。' :
+                       result.evaluation === 'B' ? '軽度の異常が見られます。生活習慣の見直しを検討してください。' :
+                       result.evaluation === 'C' ? '中程度の異常が見られます。専門医への相談をお勧めします。' :
+                       '重度の異常が見られます。至急専門医の診察を受けてください。'}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div>
-            <h2 className="text-xl font-semibold mb-2">評価</h2>
-            <p>肝機能評価: {healthCheckResult.liver_function_evaluation}</p>
-            <p>肝機能スコア: {healthCheckResult.liver_function_score}</p>
-          </div>
-        </div>
-
-        <div>
-          <h2 className="text-xl font-semibold mt-4 mb-2">詳細情報</h2>
-          <p>ここに詳細な肝機能情報や説明を表示します。</p>
-          <img src="https://placehold.co/600x300" alt="詳細情報イメージ" className="mt-4" />
         </div>
       </div>
     </Layout>
   );
 };
 
-export default Liver;
+export default LiverResultPage;

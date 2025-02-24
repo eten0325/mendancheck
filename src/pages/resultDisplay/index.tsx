@@ -1,262 +1,196 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { FaSort, FaFilter } from 'react-icons/fa';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import { Database } from '@/types/supabase';
-
-type HealthCheckResult = Database['public']['Tables']['health_check_results']['Row'];
-
-type ExtractedId = Database['public']['Tables']['extracted_ids']['Row'];
+import React from 'react';
+import Image from 'next/image';
+import Layout from '@/components/Layout';
 
 const ResultDisplay = () => {
-    const [healthCheckResults, setHealthCheckResults] = useState<HealthCheckResult[]>([]);
-    const [extractedIds, setExtractedIds] = useState<ExtractedId[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [sortKey, setSortKey] = useState<keyof HealthCheckResult | null>(null);
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-    const [filterValue, setFilterValue] = useState('');
-    const router = useRouter();
-    const supabase = createClientComponentClient<Database>();
+  return (
+    <Layout>
+      <div className="min-h-screen bg-gray-100 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">結果表示</h2>
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const { data: healthData, error: healthError } = await supabase
-                    .from('health_check_results')
-                    .select('*');
-
-                if (healthError) {
-                    console.error("Error fetching health check results:", healthError);
-                    // Fallback data
-                    setHealthCheckResults([
-                        { id: '1', user_id: 'user1', bmi: 22.5, blood_pressure: 120, blood_sugar: 90, lipid: 150, liver_function: 20, total_score: 100, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), systolic_blood_pressure: 120, diastolic_blood_pressure: 80, hba1c: 5.5, ldl_cholesterol: 100, tg: 150, ast: 20, alt: 20, gamma_gtp: 20, bmi_score: 0, blood_pressure_score: 0, blood_sugar_score: 0, lipid_score: 0, liver_function_score: 0, bmi_evaluation: 'A', blood_pressure_evaluation: 'A', blood_sugar_evaluation: 'A', lipid_evaluation: 'A', liver_function_evaluation: 'A'  },
-                        { id: '2', user_id: 'user2', bmi: 24.8, blood_pressure: 130, blood_sugar: 100, lipid: 180, liver_function: 25, total_score: 80, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), systolic_blood_pressure: 130, diastolic_blood_pressure: 90, hba1c: 5.8, ldl_cholesterol: 120, tg: 170, ast: 25, alt: 25, gamma_gtp: 25, bmi_score: 0, blood_pressure_score: 0, blood_sugar_score: 0, lipid_score: 0, liver_function_score: 0, bmi_evaluation: 'B', blood_pressure_evaluation: 'B', blood_sugar_evaluation: 'B', lipid_evaluation: 'B', liver_function_evaluation: 'B' },
-                    ]);
-                } else {
-                    setHealthCheckResults(healthData || []);
-                }
-
-                const { data: extractedData, error: extractedError } = await supabase
-                    .from('extracted_ids')
-                    .select('*');
-
-                if (extractedError) {
-                    console.error("Error fetching extracted IDs:", extractedError);
-                    setExtractedIds([
-                        { id: '1', user_id: 'user1', total_score: 100, extracted_at: new Date().toISOString() },
-                        { id: '2', user_id: 'user2', total_score: 80, extracted_at: new Date().toISOString() },
-                    ]);
-
-                } else {
-                    setExtractedIds(extractedData || []);
-                }
-
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [supabase]);
-
-    const handleSort = (key: keyof HealthCheckResult) => {
-        if (sortKey === key) {
-            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-        } else {
-            setSortKey(key);
-            setSortOrder('asc');
-        }
-    };
-
-    const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFilterValue(event.target.value);
-    };
-
-    const filteredResults = healthCheckResults.filter(result =>
-        result.user_id?.toLowerCase().includes(filterValue.toLowerCase())
-    );
-
-    const sortedResults = sortKey
-        ? [...filteredResults].sort((a, b) => {
-            const valueA = a[sortKey];
-            const valueB = b[sortKey];
-
-            if (valueA == null || valueB == null) {
-                return 0;
-            }
-
-            if (typeof valueA === 'number' && typeof valueB === 'number') {
-                return sortOrder === 'asc' ? valueA - valueB : valueB - valueA;
-            } else if (typeof valueA === 'string' && typeof valueB === 'string') {
-                return sortOrder === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
-            } else {
-                return 0;
-            }
-        })
-        : filteredResults;
-
-    // Data for score distribution chart
-    const scoreDistributionData = healthCheckResults.map(result => ({
-        user_id: result.user_id,
-        total_score: result.total_score,
-    }));
-
-    if (loading) {
-        return (
-            <div className="min-h-screen h-full bg-gray-100 flex items-center justify-center">
-                <div className="text-2xl font-semibold">ロード中...</div>
+          {/* フィルターセクション */}
+          <div className="bg-white p-6 rounded-lg shadow mb-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">フィルター</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">日付範囲</label>
+                <select className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                  <option>過去7日間</option>
+                  <option>過去30日間</option>
+                  <option>過去3ヶ月間</option>
+                  <option>カスタム範囲</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">評価ランク</label>
+                <select className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                  <option>すべて</option>
+                  <option>A</option>
+                  <option>B</option>
+                  <option>C</option>
+                  <option>D</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">表示項目</label>
+                <select className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                  <option>すべての項目</option>
+                  <option>BMIのみ</option>
+                  <option>血圧のみ</option>
+                  <option>血糖値のみ</option>
+                </select>
+              </div>
             </div>
-        );
-    }
+          </div>
 
-    return (
-        <div className="min-h-screen h-full bg-gray-100">
-            <header className="bg-white shadow-md py-4">
-                <div className="container mx-auto px-4">
-                    <h1 className="text-2xl font-semibold">結果表示画面</h1>
-                </div>
-            </header>
-
-            <main className="container mx-auto px-4 py-8">
-                <section className="mb-8">
-                    <h2 className="text-xl font-semibold mb-4">スコア分布グラフ</h2>
-                    <BarChart width={600} height={300} data={scoreDistributionData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="user_id" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="total_score" fill="#8884d8" />
-                    </BarChart>
-                </section>
-
-                <section className="mb-8">
-                    <h2 className="text-xl font-semibold mb-4">上位抽出IDリスト</h2>
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full bg-white">
-                            <thead>
-                                <tr className="bg-gray-200">
-                                    <th className="py-2 px-4 border-b">ID</th>
-                                    <th className="py-2 px-4 border-b">ユーザーID</th>
-                                    <th className="py-2 px-4 border-b">スコア</th>
-                                    <th className="py-2 px-4 border-b">抽出日</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {extractedIds.map(item => (
-                                    <tr key={item.id} className="hover:bg-gray-100">
-                                        <td className="py-2 px-4 border-b">{item.id}</td>
-                                        <td className="py-2 px-4 border-b">{item.user_id}</td>
-                                        <td className="py-2 px-4 border-b">{item.total_score}</td>
-                                        <td className="py-2 px-4 border-b">{item.extracted_at}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <section className="mb-8">
-                    <h2 className="text-xl font-semibold mb-4">評価結果表</h2>
-                    <div className="flex items-center mb-4">
-                        <input
-                            type="text"
-                            placeholder="ユーザーIDでフィルタ" // "Filter by User ID"
-                            className="border rounded py-2 px-3 mr-2"
-                            value={filterValue}
-                            onChange={handleFilterChange}
-                        />
-                        <div className="flex items-center space-x-2">
-                            <button
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center"
-                                onClick={() => handleSort('total_score')}
-                            >
-                                <FaSort className="mr-2" /> {/* スコアでソート */}
-                                スコアでソート
-                            </button>
+          {/* 結果一覧 */}
+          <div className="bg-white shadow overflow-hidden sm:rounded-md">
+            <ul className="divide-y divide-gray-200">
+              <li>
+                <div className="px-4 py-4 sm:px-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                          <span className="text-indigo-800 font-semibold">A</span>
                         </div>
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">ID: 1001</div>
+                        <div className="text-sm text-gray-500">測定日: 2024-02-24</div>
+                      </div>
                     </div>
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full bg-white">
-                            <thead>
-                                <tr className="bg-gray-200">
-                                    <th className="py-2 px-4 border-b">
-                                        <button onClick={() => handleSort('user_id')} className="flex items-center">
-                                            ユーザーID
-                                            {sortKey === 'user_id' && (sortOrder === 'asc' ? ' ▲' : ' ▼')}
-                                        </button>
-                                    </th>
-                                    <th className="py-2 px-4 border-b">
-                                        <button onClick={() => handleSort('total_score')} className="flex items-center">
-                                            合計スコア
-                                            {sortKey === 'total_score' && (sortOrder === 'asc' ? ' ▲' : ' ▼')}
-                                        </button>
-                                    </th>
-                                    <th className="py-2 px-4 border-b">
-                                        <button onClick={() => handleSort('bmi')} className="flex items-center">
-                                            BMI
-                                            {sortKey === 'bmi' && (sortOrder === 'asc' ? ' ▲' : ' ▼')}
-                                        </button>
-                                    </th>
-                                    <th className="py-2 px-4 border-b">
-                                        <button onClick={() => handleSort('blood_pressure')} className="flex items-center">
-                                            血圧
-                                            {sortKey === 'blood_pressure' && (sortOrder === 'asc' ? ' ▲' : ' ▼')}
-                                        </button>
-                                    </th>
-                                    <th className="py-2 px-4 border-b">
-                                        <button onClick={() => handleSort('blood_sugar')} className="flex items-center">
-                                            血糖値
-                                            {sortKey === 'blood_sugar' && (sortOrder === 'asc' ? ' ▲' : ' ▼')}
-                                        </button>
-                                    </th>
-                                    <th className="py-2 px-4 border-b">
-                                        <button onClick={() => handleSort('lipid')} className="flex items-center">
-                                            脂質
-                                            {sortKey === 'lipid' && (sortOrder === 'asc' ? ' ▲' : ' ▼')}
-                                        </button>
-                                    </th>
-                                    <th className="py-2 px-4 border-b">
-                                        <button onClick={() => handleSort('liver_function')} className="flex items-center">
-                                            肝機能
-                                            {sortKey === 'liver_function' && (sortOrder === 'asc' ? ' ▲' : ' ▼')}
-                                        </button>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {sortedResults.map(result => (
-                                    <tr key={result.id} className="hover:bg-gray-100">
-                                        <td className="py-2 px-4 border-b">{result.user_id}</td>
-                                        <td className="py-2 px-4 border-b">{result.total_score}</td>
-                                        <td className="py-2 px-4 border-b">{result.bmi}</td>
-                                        <td className="py-2 px-4 border-b">{result.blood_pressure}</td>
-                                        <td className="py-2 px-4 border-b">{result.blood_sugar}</td>
-                                        <td className="py-2 px-4 border-b">{result.lipid}</td>
-                                        <td className="py-2 px-4 border-b">{result.liver_function}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    <div className="flex items-center">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        良好
+                      </span>
                     </div>
-                </section>
-
-                <section>
-                    <h2 className="text-xl font-semibold mb-4">詳細データ表示領域</h2>
-                    <p>グラフ上のデータにマウスオーバーすると、詳細が表示されます。</p>
-                    <img src="https://placehold.co/600x300" alt="Placeholder" className="w-full h-auto" />
-                </section>
-            </main>
-
-            <footer className="bg-gray-800 text-white py-4">
-                <div className="container mx-auto px-4">
-                    <p className="text-center">© 2025 健康診断システム</p>
+                  </div>
+                  <div className="mt-2">
+                    <div className="text-sm text-gray-500">
+                      総合スコア: 85点 - すべての項目で基準値内に収まっています。特に血圧と血糖値の数値が理想的な範囲です。
+                    </div>
+                  </div>
                 </div>
-            </footer>
+              </li>
+              <li>
+                <div className="px-4 py-4 sm:px-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0">
+                        <div className="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                          <span className="text-yellow-800 font-semibold">B</span>
+                        </div>
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">ID: 1002</div>
+                        <div className="text-sm text-gray-500">測定日: 2024-02-23</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                        要注意
+                      </span>
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    <div className="text-sm text-gray-500">
+                      総合スコア: 75点 - BMIと血圧が基準値をやや超えています。生活習慣の改善をお勧めします。
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          {/* ページネーション */}
+          <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 mt-4">
+            <div className="flex-1 flex justify-between sm:hidden">
+              <a
+                href="#"
+                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              >
+                前へ
+              </a>
+              <a
+                href="#"
+                className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              >
+                次へ
+              </a>
+            </div>
+            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm text-gray-700">
+                  全<span className="font-medium">97</span>件中
+                  <span className="font-medium">1</span>から
+                  <span className="font-medium">10</span>件を表示
+                </p>
+              </div>
+              <div>
+                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                  <a
+                    href="#"
+                    className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  >
+                    <span className="sr-only">前へ</span>
+                    <Image
+                      src="/icons/chevron-left.png"
+                      alt="前へ"
+                      width={20}
+                      height={20}
+                      className="h-5 w-5"
+                    />
+                  </a>
+                  <a
+                    href="#"
+                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    1
+                  </a>
+                  <a
+                    href="#"
+                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    2
+                  </a>
+                  <a
+                    href="#"
+                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    3
+                  </a>
+                  <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-gray-50 text-sm font-medium text-gray-700">
+                    ...
+                  </span>
+                  <a
+                    href="#"
+                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    10
+                  </a>
+                  <a
+                    href="#"
+                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  >
+                    <span className="sr-only">次へ</span>
+                    <Image
+                      src="/icons/chevron-right.png"
+                      alt="次へ"
+                      width={20}
+                      height={20}
+                      className="h-5 w-5"
+                    />
+                  </a>
+                </nav>
+              </div>
+            </div>
+          </div>
         </div>
-    );
+      </div>
+    </Layout>
+  );
 };
 
 export default ResultDisplay;

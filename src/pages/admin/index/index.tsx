@@ -1,126 +1,116 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Session } from '@supabase/supabase-js';
-import { FaCog, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
+import React from 'react';
+import Image from 'next/image';
+import Layout from '@/components/Layout';
 
-const AdminPage = () => {
-  const [session, setSession] = useState<Session | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const router = useRouter();
-  const supabase = createClientComponentClient();
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, [supabase]);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.push('/login');
-  };
-
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
-
+const AdminDashboard = () => {
   return (
-    <div className="min-h-screen h-full bg-gray-100">
-      <div className="flex flex-col h-full">
-        {/* ヘッダー */}
-        <header className="bg-white shadow-md py-4 px-6 flex items-center justify-between">
-          <div className="flex items-center">
-            <button onClick={toggleSidebar} className="mr-4 lg:hidden">
-              {sidebarOpen ? <FaTimes className="h-6 w-6" /> : <FaBars className="h-6 w-6" />}
-            </button>
-            <h1 className="text-2xl font-semibold text-gray-800">管理者画面</h1>
+    <Layout>
+      <div className="min-h-screen bg-gray-100 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">管理者ダッシュボード</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* システム状態 */}
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">システム状態</h3>
+              <div className="flex items-center">
+                <div className="h-3 w-3 bg-green-500 rounded-full mr-2"></div>
+                <span className="text-sm text-gray-600">正常稼働中</span>
+              </div>
+            </div>
+
+            {/* ユーザー統計 */}
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">ユーザー統計</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-600">総ユーザー数</span>
+                  <span className="text-sm font-medium">250</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-600">アクティブユーザー</span>
+                  <span className="text-sm font-medium">180</span>
+                </div>
+              </div>
+            </div>
+
+            {/* データ処理状況 */}
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">データ処理状況</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-600">処理済みファイル</span>
+                  <span className="text-sm font-medium">1,234</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-600">処理待ちファイル</span>
+                  <span className="text-sm font-medium">5</span>
+                </div>
+              </div>
+            </div>
+
+            {/* エラー状況 */}
+            <div className="bg-white p-6 rounded-lg shadow">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">エラー状況</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-600">直近24時間</span>
+                  <span className="text-sm font-medium">2件</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-600">未解決エラー</span>
+                  <span className="text-sm font-medium">1件</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <button
-            onClick={handleSignOut}
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            サインアウト
-          </button>
-        </header>
 
-        {/* メインコンテンツ */}
-        <div className="flex flex-1">
-          {/* サイドバー (PC) */}
-          <aside
-            className={`bg-gray-200 w-64 p-6 hidden lg:block ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-transition-transform duration-300 ease-in-out`}
-            data-testid="sidebar"
-          >
-            <nav>
-              <h2 className="text-lg font-semibold mb-4">メニュー</h2>
-              <ul>
-                <li className="mb-2">
-                  <a href="/admin/log" className="hover:bg-gray-300 py-2 px-4 block rounded">
-                    ログ管理メニュー
-                  </a>
-                </li>
-                <li className="mb-2">
-                  <a href="/admin/settings" className="hover:bg-gray-300 py-2 px-4 block rounded">
-                    設定管理メニュー
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </aside>
-
-          {/* サイドバー (モバイル) */}
-          <aside
-            className={`fixed top-0 left-0 h-full w-64 bg-gray-200 p-6 shadow-md z-50 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:hidden`}
-            data-testid="sidebar"
-          >
-            <div className="flex justify-end mb-4">
-              <button onClick={toggleSidebar} className="p-2 bg-gray-300 rounded-full">
-                <FaTimes className="h-5 w-5" />
-              </button>
+          {/* システムログ */}
+          <div className="mt-8">
+            <div className="bg-white shadow rounded-lg">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900">システムログ</h3>
+              </div>
+              <div className="p-6">
+                <div className="space-y-4">
+                  <div className="flex items-start">
+                    <Image
+                      src="/icons/info.png"
+                      alt="情報"
+                      width={20}
+                      height={20}
+                      className="flex-shrink-0"
+                    />
+                    <div className="ml-3">
+                      <p className="text-sm text-gray-600">
+                        システムアップデートが正常に完了しました
+                      </p>
+                      <p className="mt-1 text-xs text-gray-500">2024-02-24 10:30:00</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start">
+                    <Image
+                      src="/icons/warning.png"
+                      alt="警告"
+                      width={20}
+                      height={20}
+                      className="flex-shrink-0"
+                    />
+                    <div className="ml-3">
+                      <p className="text-sm text-gray-600">
+                        バックアップ処理に遅延が発生しています
+                      </p>
+                      <p className="mt-1 text-xs text-gray-500">2024-02-24 09:15:00</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <nav>
-              <h2 className="text-lg font-semibold mb-4">メニュー</h2>
-              <ul>
-                <li className="mb-2">
-                  <a href="/admin/log" className="hover:bg-gray-300 py-2 px-4 block rounded">
-                    ログ管理メニュー
-                  </a>
-                </li>
-                <li className="mb-2">
-                  <a href="/admin/settings" className="hover:bg-gray-300 py-2 px-4 block rounded">
-                    設定管理メニュー
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </aside>
-
-          {/* コンテンツ */}
-          <main className="flex-1 p-6">
-            <h2 className="text-xl font-semibold mb-4">ダッシュボード</h2>
-            <div className="bg-white shadow rounded p-4">
-              <p>システム管理者が利用する画面です。</p>
-              <img
-                src="https://placehold.co/600x400?text=Dashboard"
-                alt="Dashboard Placeholder"
-                className="mt-4 rounded"
-              />
-            </div>
-          </main>
+          </div>
         </div>
-
-        {/* フッター */}
-        <footer className="bg-gray-300 py-2 px-6 text-center">
-          <p>&copy; 2025 Health Check System</p>
-        </footer>
       </div>
-    </div>
+    </Layout>
   );
 };
 
-export default AdminPage;
+export default AdminDashboard;

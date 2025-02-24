@@ -1,98 +1,59 @@
-import { jest } from '@jest/globals';
+import '@testing-library/jest-dom';
 import { NextRouter } from 'next/router';
+import { ParsedUrlQuery } from 'querystring';
 
-// NODE_ENV が "test" の場合にのみモックを適用
-if (process.env.NODE_ENV === 'test') {
-  jest.mock('next/router', () => ({
-    useRouter: () => mockRouter,
-    usePathname: jest.fn(),
-    useSearchParams: jest.fn(() => new URLSearchParams()),
-  }));
-}
-
-// Fetch のモック
-global.fetch = jest.fn(
-  (input: RequestInfo | URL, init?: RequestInit) =>
-    Promise.resolve({
-      json: () => Promise.resolve({}),
-      text: () => Promise.resolve(""),
-      ok: true,
-      status: 200,
-      statusText: "OK",
-      headers: new Headers(),
-      redirected: false,
-      type: 'default' as ResponseType,
-      url: '',
-      body: null,
-      bodyUsed: false,
-      clone: () => Promise.resolve({} as Response),
-      arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
-      blob: () => Promise.resolve(new Blob()),
-      formData: () => Promise.resolve(new FormData()),
-    } as unknown as Response)
-) as jest.MockedFunction<typeof fetch>;
-
-// Axios のモック
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
-
-// Next.js の Router モック
-type PushMock = (url: string, as?: string, options?: Record<string, unknown>) => Promise<boolean>;
-type PrefetchMock = (url: string, as?: string, options?: Record<string, unknown>) => Promise<void>;
-
-interface MockedNextRouter extends NextRouter {
-  pathname: string;
-  isLocaleDomain: boolean;
-  prefetch: (input: string) => Promise<void>;
-  isReady: boolean;
-}
-
-const mockRouter: MockedNextRouter = {
-  push: jest.fn<PushMock>().mockResolvedValue(true),
-  replace: jest.fn<PushMock>().mockResolvedValue(true),
+// Next.jsのrouterのモック
+const createMockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
+  basePath: '',
+  pathname: '/',
+  route: '/',
+  asPath: '/',
+  query: {} as ParsedUrlQuery,
+  push: jest.fn(() => Promise.resolve(true)),
+  replace: jest.fn(() => Promise.resolve(true)),
+  reload: jest.fn(),
   back: jest.fn(),
   forward: jest.fn(),
-  reload: jest.fn(),
+  prefetch: jest.fn(() => Promise.resolve()),
   beforePopState: jest.fn(),
-  isFallback: false,
-  isPreview: false,
   events: {
     on: jest.fn(),
     off: jest.fn(),
     emit: jest.fn(),
   },
-  pathname: '/test-path',
-  route: '/test-path',
-  query: {},
-  asPath: '/test-path',
-  basePath: '',
+  isFallback: false,
   isLocaleDomain: false,
-  prefetch: jest.fn<PrefetchMock>().mockResolvedValue(undefined),
   isReady: true,
-};
+  isPreview: false,
+  locale: undefined,
+  locales: undefined,
+  defaultLocale: undefined,
+  domainLocales: undefined,
+  ...props,
+});
 
+// Next.jsのrouterモックを設定
 jest.mock('next/router', () => ({
-  useRouter: () => mockRouter,
-  usePathname: jest.fn(),
-  useSearchParams: jest.fn(() => new URLSearchParams()),
+  useRouter: () => createMockRouter(),
 }));
 
-// グローバル変数の設定
-declare global {
-  namespace NodeJS {
-    interface Global {
-      fetch: jest.Mock;
-      mockNextRouter: typeof mockRouter;
-    }
-  }
-  var mockNextRouter: typeof mockRouter;
-  var axios: any;
-}
-
-global.mockNextRouter = mockRouter;
-global.axios = mockedAxios;
-
-// テスト前の共通セットアップ
-beforeEach(() => {
-  jest.clearAllMocks();
-});
+// Supabaseのモック
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: jest.fn(() => ({
+    auth: {
+      getSession: jest.fn(() => Promise.resolve({ data: { session: null }, error: null })),
+      signIn: jest.fn(),
+      signOut: jest.fn(),
+    },
+    from: jest.fn(() => ({
+      select: jest.fn(() => ({
+        order: jest.fn(() => ({
+          limit: jest.fn(() => Promise.resolve({ data: [], error: null })),
+        })),
+        eq: jest.fn(() => ({
+          single: jest.fn(() => Promise.resolve({ data: null, error: null })),
+        })),
+      })),
+    })),
+  })),
+}));
