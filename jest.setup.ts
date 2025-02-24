@@ -2,8 +2,12 @@ import '@testing-library/jest-dom';
 import { NextRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 
+type MockedNextRouter = NextRouter & {
+  // ほかに拡張したいプロパティがあれば追加
+};
+
 // Next.jsのrouterのモック
-const createMockRouter = (props: Partial<NextRouter> = {}): NextRouter => ({
+const createMockRouter = (props: Partial<MockedNextRouter> = {}): MockedNextRouter => ({
   basePath: '',
   pathname: '/test-path',
   route: '/test-path',
