@@ -34,6 +34,9 @@ type PrefetchMock = (url: string, as?: string, options?: Record<string, unknown>
 
 interface MockedNextRouter extends NextRouter {
   pathname: string;
+  isLocaleDomain: boolean;
+  prefetch: (input: string) => Promise<void>;
+  isReady: boolean;
 }
 
 const mockRouter: MockedNextRouter = {
@@ -41,18 +44,23 @@ const mockRouter: MockedNextRouter = {
   replace: jest.fn<PushMock>().mockResolvedValue(true),
   back: jest.fn(),
   forward: jest.fn(),
-  prefetch: jest.fn<PrefetchMock>().mockResolvedValue(undefined),
-  pathname: '/test-path',
-  basePath: '',
-  route: '/',
-  asPath: '/',
+  reload: jest.fn(),              // 追加
+  beforePopState: jest.fn(),      // 追加
+  isFallback: false,              // 追加（通常は boolean）
+  isPreview: false,               // 追加（通常は boolean）
+  events: {
+    on: jest.fn(),
+    off: jest.fn(),
+    emit: jest.fn(),
+  },
+  pathname: '/test-path',         // 既存のプロパティも必要なら追加
+  route: '/test-path',
   query: {},
+  asPath: '/test-path',
+  basePath: '',
   isLocaleDomain: false,
+  prefetch: jest.fn<PrefetchMock>().mockResolvedValue(Promise.resolve()),
   isReady: true,
-  locale: 'ja',
-  locales: ['ja'],
-  defaultLocale: 'ja',
-  events: { emit: jest.fn(), off: jest.fn(), on: jest.fn() },
 };
 
 jest.mock('next/navigation', () => ({
