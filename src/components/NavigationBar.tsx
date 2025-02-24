@@ -27,11 +27,13 @@ const navigationItems = [
 ];
 
 const NavigationBar: React.FC = () => {
-  const router = useRouter();
+  const router = useRouter() as any;
+  const pathname = router?.pathname;
+
   const currentPath = React.useMemo(() => {
     if (typeof window === 'undefined') return '/';
-    return (router as any)?.pathname || '/';
-  }, [(router as any)?.pathname]);
+    return pathname || '/';
+  }, [pathname]);
 
   return (
     <nav className="bg-white shadow-sm">
