@@ -41,7 +41,6 @@ const mockRouter: MockedNextRouter = {
   replace: jest.fn<PushMock>().mockResolvedValue(true),
   back: jest.fn(),
   forward: jest.fn(),
-  refresh: jest.fn(),
   prefetch: jest.fn<PrefetchMock>().mockResolvedValue(undefined),
   pathname: '/test-path',
   basePath: '',
