@@ -36,7 +36,7 @@ type HealthCheckResult = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     try {
-      const { user } = await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
         return res.status(401).json({ error: '認証が必要です' });
