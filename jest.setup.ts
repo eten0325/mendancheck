@@ -11,12 +11,10 @@ import { NextRouter } from 'next/router';
 
 // Next.js の router のモック
 const mockRouter: NextRouter = {
-  push: jest.fn().mockImplementation(
-    async (_url, _as, _options) => true
-  ),
-  replace: jest.fn().mockImplementation(
-    async (_url, _as, _options) => true
-  ),
+  push: jest.fn<(url: string, as?: string, options?: Record<string, unknown>) => Promise<boolean>>()
+    .mockImplementation(async (_url, _as, _options) => true),
+  replace: jest.fn<(url: string, as?: string, options?: Record<string, unknown>) => Promise<boolean>>()
+    .mockImplementation(async (_url, _as, _options) => true),
   back: jest.fn(),
   forward: jest.fn(),
   reload: jest.fn(),
@@ -34,6 +32,8 @@ const mockRouter: NextRouter = {
   query: {},
   asPath: '/test-path',
   basePath: '',
+  prefetch: jest.fn(() => Promise.resolve()),
+  isReady: true,
 };
 
 if (process.env.NODE_ENV === 'test') {
