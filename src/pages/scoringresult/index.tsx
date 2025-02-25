@@ -270,16 +270,16 @@ const ScoringResult = () => {
                         <td className={`px-6 py-4 whitespace-nowrap text-sm ${EVALUATION_COLORS[result.bmi_evaluation]}`}>
                           {result.bmi}
                         </td>
-                        <td className={`px-6 py-4 whitespace-nowrap text-sm ${EVALUATION_COLORS[result.bp_evaluation]}`}>
+                        <td className={`px-6 py-4 whitespace-nowrap text-sm ${EVALUATION_COLORS[result.blood_pressure_evaluation]}`}>
                           {result.systolic_blood_pressure}/{result.diastolic_blood_pressure}
                         </td>
-                        <td className={`px-6 py-4 whitespace-nowrap text-sm ${EVALUATION_COLORS[result.glucose_evaluation]}`}>
+                        <td className={`px-6 py-4 whitespace-nowrap text-sm ${EVALUATION_COLORS[result.blood_sugar_evaluation]}`}>
                           BS: {result.blood_sugar}, HbA1c: {result.hba1c}
                         </td>
                         <td className={`px-6 py-4 whitespace-nowrap text-sm ${EVALUATION_COLORS[result.lipid_evaluation]}`}>
                           LDL: {result.ldl_cholesterol}, TG: {result.tg}
                         </td>
-                        <td className={`px-6 py-4 whitespace-nowrap text-sm ${EVALUATION_COLORS[result.liver_evaluation]}`}>
+                        <td className={`px-6 py-4 whitespace-nowrap text-sm ${EVALUATION_COLORS[result.liver_function_evaluation]}`}>
                           AST: {result.ast}, ALT: {result.alt}, γ-GTP: {result.gamma_gtp}
                         </td>
                       </tr>
