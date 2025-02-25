@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Database } from '@/supabase/types';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -18,6 +19,9 @@ export default function SignUp() {
         password,
         options: {
           emailRedirectTo: `${location.origin}/auth/callback`,
+          data: {
+            email_confirm: true  // 開発環境用
+          }
         },
       });
       if (error) throw error;
@@ -71,6 +75,14 @@ export default function SignUp() {
             アカウント作成
           </button>
         </form>
+        <div className="text-center mt-4">
+          <Link
+            href="/login"
+            className="font-medium text-blue-600 hover:text-blue-500"
+          >
+            ログインページに戻る
+          </Link>
+        </div>
       </div>
     </div>
   );
