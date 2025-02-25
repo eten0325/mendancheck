@@ -8,6 +8,9 @@ export type Database = {
       health_check_results: {
         Row: {
           id: string;
+          user_id: string;
+          created_at: string;
+          updated_at: string;
           bmi: number;
           systolic_blood_pressure: number;
           diastolic_blood_pressure: number;
@@ -32,6 +35,9 @@ export type Database = {
         };
         Insert: {
           id?: string;
+          user_id: string;
+          created_at?: string;
+          updated_at?: string;
           bmi: number;
           systolic_blood_pressure: number;
           diastolic_blood_pressure: number;
@@ -56,6 +62,9 @@ export type Database = {
         };
         Update: {
           id?: string;
+          user_id?: string;
+          created_at?: string;
+          updated_at?: string;
           bmi?: number;
           systolic_blood_pressure?: number;
           diastolic_blood_pressure?: number;
