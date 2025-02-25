@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Layout } from '../../components/Layout';
+import Layout from '@/components/Layout';
 
 const ResultUserId = () => {
   const router = useRouter();
