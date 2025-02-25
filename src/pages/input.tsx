@@ -63,6 +63,7 @@ export default function Input() {
         // 基本データのみを保存
         const data = {
           id: uuidv4(),
+          user_id: 'default_user',
           bmi: parseFloat(values[2]),
           systolic_blood_pressure: parseInt(values[3]),
           diastolic_blood_pressure: parseInt(values[4]),
@@ -73,9 +74,7 @@ export default function Input() {
           ast: parseInt(values[9]),
           alt: parseInt(values[10]),
           gamma_gtp: parseInt(values[11]),
-          user_id: 'default_user',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          created_at: new Date().toISOString()
         };
 
         console.log('Inserting data:', data);
