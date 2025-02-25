@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Layout } from '../../components/Layout';
-import { Header } from '../../components/Header';
-import { supabase } from '@/supabase';
+import Layout from '@/components/Layout';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Database } from '@/supabase/types';
 import {ArrowLeftIcon} from '@heroicons/react/24/solid'
 import Link from 'next/link';
 
 const TopDetail = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [healthCheckResult, setHealthCheckResult] = useState(null);
+  const [healthCheckResult, setHealthCheckResult] = useState<Database['public']['Tables']['health_check_results']['Row'] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+  const supabase = createClientComponentClient<Database>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,7 +46,6 @@ const TopDetail = () => {
   if (loading) {
     return (
       <Layout>
-        <Header />
         <div className="min-h-screen h-full flex items-center justify-center">
           <p>Loading...</p>
         </div>
@@ -56,7 +56,6 @@ const TopDetail = () => {
   if (error) {
     return (
       <Layout>
-        <Header />
         <div className="min-h-screen h-full flex items-center justify-center">
           <p>Error: {error}</p>
         </div>
@@ -67,7 +66,6 @@ const TopDetail = () => {
   if (!healthCheckResult) {
     return (
       <Layout>
-        <Header />
         <div className="min-h-screen h-full flex items-center justify-center">
           <p>データが見つかりません。</p>
         </div>
@@ -77,7 +75,6 @@ const TopDetail = () => {
 
   return (
     <Layout>
-      <Header />
       <div className="min-h-screen h-full p-4">
         <div className="mb-4">
         <Link href="/topList" className="flex items-center gap-2">
