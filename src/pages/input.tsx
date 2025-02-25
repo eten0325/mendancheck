@@ -14,7 +14,7 @@ interface HealthCheckData {
   tg: number;
   ast: number;
   alt: number;
-  gtp: number;
+  gamma_gtp: number;
   bmi_score: number;
   blood_pressure_score: number;
   blood_sugar_score: number;
@@ -68,7 +68,7 @@ export default function Input() {
           tg: parseInt(values[8]),
           ast: parseInt(values[9]),
           alt: parseInt(values[10]),
-          gtp: parseInt(values[11])
+          gamma_gtp: parseInt(values[11])
         };
 
         // データの検証を削除（上で行うため）

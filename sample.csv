@@ -1,2 +1,2 @@
-id,user_id,bmi,systolic_blood_pressure,diastolic_blood_pressure,blood_sugar,hba1c,ldl_cholesterol,tg,ast,alt,gtp
+id,user_id,bmi,systolic_blood_pressure,diastolic_blood_pressure,blood_sugar,hba1c,ldl_cholesterol,tg,ast,alt,gamma_gtp
 1,user1,22.5,120,80,95,5.2,110,150,20,25,30 
