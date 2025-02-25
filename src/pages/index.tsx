@@ -22,12 +22,6 @@ export default function Home() {
             >
               評価結果一覧
             </button>
-            <button
-              onClick={() => router.push('/graph')}
-              className="w-full py-3 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700"
-            >
-              グラフ表示
-            </button>
           </div>
         </div>
       </div>
