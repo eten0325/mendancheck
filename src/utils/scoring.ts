@@ -54,10 +54,10 @@ export function generateScoringResult(data: Record<string, string>): ScoringResu
     liver_function_score: liverScore,
     total_score: totalScore,
     bmi_evaluation: bmiEvaluation,
-    blood_pressure_evaluation: bpEvaluation,
-    blood_sugar_evaluation: bsEvaluation,
+    bp_evaluation: bpEvaluation, // blood_pressure_evaluation -> bp_evaluation
+    glucose_evaluation: bsEvaluation, // blood_sugar_evaluation -> glucose_evaluation
     lipid_evaluation: lipidEvaluation,
-    liver_function_evaluation: liverEvaluation
+    liver_evaluation: liverEvaluation // liver_function_evaluation -> liver_evaluation
   };
 }
 

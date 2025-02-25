@@ -20,10 +20,10 @@ export interface ScoringResult {
   liver_function_score: number;
   total_score: number;
   bmi_evaluation: Evaluation;
-  blood_pressure_evaluation: Evaluation;
-  blood_sugar_evaluation: Evaluation;
+  bp_evaluation: Evaluation; // データベースのカラム名と一致させる
+  glucose_evaluation: Evaluation; // データベースのカラム名と一致させる
   lipid_evaluation: Evaluation;
-  liver_function_evaluation: Evaluation;
+  liver_evaluation: Evaluation; // データベースのカラム名と一致させる
 }
 
 export const EVALUATION_COLORS: Record<Evaluation, string> = {

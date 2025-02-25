@@ -95,19 +95,67 @@ export default async function handler(
         } else if ('GTP' in row) {
           processedRow['γGTP'] = row.GTP;
         }
+        
+        // カラム名の大文字小文字を統一（BMI, bmiなど）
+        Object.keys(processedRow).forEach(key => {
+          const upperKey = key.toUpperCase();
+          if (['ID', 'BMI', 'SBP', 'DBP', 'BS', 'HBA1C', 'LDL', 'TG', 'AST', 'ALT', 'GTP', 'ΓGTP'].includes(upperKey)) {
+            if (upperKey !== key) {
+              processedRow[upperKey] = processedRow[key];
+            }
+          }
+        });
+        
         const result = generateScoringResult(processedRow);
         console.log(`Generated result for row ${index}:`, result);
+        
+        // total_scoreが存在することを確認
+        if (result.total_score === undefined || result.total_score === null) {
+          console.error(`ERROR: total_score is ${result.total_score} for row ${index}`);
+          // デフォルト値を設定
+          result.total_score = 0;
+        }
+        
         return result;
       });
 
+      console.log('Final scoring results before DB insert:', scoringResults);
+      
+      // 各結果のフィールドを確認
+      scoringResults.forEach((result, index) => {
+        const requiredFields = [
+          'id', 'user_id', 'total_score', 'bmi', 'bmi_evaluation',
+          'systolic_blood_pressure', 'diastolic_blood_pressure', 'bp_evaluation',
+          'blood_sugar', 'hba1c', 'glucose_evaluation',
+          'ldl_cholesterol', 'tg', 'lipid_evaluation',
+          'ast', 'alt', 'gamma_gtp', 'liver_evaluation'
+        ];
+        
+        const missingFields = requiredFields.filter(field => 
+          result[field as keyof ScoringResult] === undefined || 
+          result[field as keyof ScoringResult] === null
+        );
+        
+        if (missingFields.length > 0) {
+          console.error(`Row ${index} is missing required fields:`, missingFields);
+        }
+      });
+      
       // Supabaseにデータを保存
       const { error: insertError } = await supabase
         .from('health_check_results')
         .upsert(
-          scoringResults.map(result => ({
-            ...result,
-            created_at: new Date().toISOString(),
-          }))
+          scoringResults.map(result => {
+            // 必須フィールドが存在することを確認
+            const data = {
+              ...result,
+              total_score: result.total_score || 0, // nullの場合は0を設定
+              created_at: new Date().toISOString(),
+            };
+            
+            // データベースのスキーマに合わせてフィールド名を変換
+            return data;
+          })
         );
 
       if (insertError) {
