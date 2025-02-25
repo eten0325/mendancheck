@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Database } from '@/supabase/types';
+import { useRouter } from 'next/router';
 
 const Graph = () => {
+  const router = useRouter();
   const supabase = createClientComponentClient<Database>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,6 +56,12 @@ const Graph = () => {
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-4">グラフ表示</h1>
         {/* グラフコンポーネントをここに追加 */}
+        <button
+          onClick={() => router.push('/')}
+          className="mt-4 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+        >
+          戻る
+        </button>
       </div>
     </Layout>
   );
