@@ -3,8 +3,10 @@ import { useRouter } from 'next/router';
 import Layout from '@/components/Layout';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Database } from '@/supabase/types';
+import { v4 as uuidv4 } from 'uuid';
 
 interface HealthCheckData {
+  id: string;
   bmi: number;
   systolic_blood_pressure: number;
   diastolic_blood_pressure: number;
@@ -60,6 +62,7 @@ export default function Input() {
 
         // 基本データのみを保存
         const data = {
+          id: uuidv4(),
           bmi: parseFloat(values[2]),
           systolic_blood_pressure: parseInt(values[3]),
           diastolic_blood_pressure: parseInt(values[4]),
@@ -71,8 +74,11 @@ export default function Input() {
           alt: parseInt(values[10]),
           gamma_gtp: parseInt(values[11]),
           user_id: 'default_user',
-          created_at: new Date().toISOString()
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         };
+
+        console.log('Inserting data:', data);
 
         // Supabaseにデータを保存
         const { error: insertError } = await supabase
