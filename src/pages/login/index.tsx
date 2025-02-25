@@ -36,11 +36,15 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen h-full flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-96">
-        <h2 className="text-2xl font-semibold mb-6 text-center text-gray-700">ログイン画面</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            ログイン
+          </h2>
+        </div>
         {error && <div className="bg-red-200 text-red-700 p-3 rounded mb-4">{error}</div>}
-        <form onSubmit={handleLogin}>
+        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           <div className="mb-4">
             <label htmlFor="userId" className="block text-gray-700 text-sm font-bold mb-2">
               <FaUser className="inline-block mr-1" />
@@ -71,18 +75,23 @@ const LoginPage = () => {
               autoComplete="current-password"
             />
           </div>
-          <div className="flex items-center justify-between">
+          <div>
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
               ログイン
             </button>
-            <Link href="/register" className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
-              アカウントを作成
-            </Link>
           </div>
         </form>
+        <div className="text-center mt-4">
+          <Link 
+            href="/auth/signup"
+            className="font-medium text-blue-600 hover:text-blue-500"
+          >
+            アカウントを作成
+          </Link>
+        </div>
       </div>
     </div>
   );
