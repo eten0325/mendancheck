@@ -49,7 +49,7 @@ const TableSort = () => {
     };
 
     fetchSortSettings();
-  }, []);
+  }, [supabase]);
 
   const handleSortConditionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSortCondition(event.target.value);
