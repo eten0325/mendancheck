@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Header from '@/components/Header';
-import Sidebar from '@/components/Sidebar';
 
 const ParamSetting = () => {
   const [extractionRatio, setExtractionRatio] = useState<number | null>(null);
@@ -81,9 +79,9 @@ const ParamSetting = () => {
 
   return (
     <div className="min-h-screen h-full bg-gray-100 flex">
-      <Sidebar />
+      <NavigationSidebar />
       <div className="flex-1 p-4">
-        <Header />
+        <PageHeader />
         <main className="container mx-auto mt-8 p-4 bg-white shadow-md rounded-md">
           <h1 className="text-2xl font-semibold mb-4">パラメータ設定画面</h1>
           {isLoading && <div className="text-yellow-500">Loading...</div>}
@@ -118,8 +116,7 @@ const ParamSetting = () => {
 
 export default ParamSetting;
 
-
-const Header = () => {
+const PageHeader = () => {
   return (
     <header className="bg-white shadow-md p-4">
       <h1 className="text-lg font-semibold">Header</h1>
@@ -135,7 +132,7 @@ const Footer = () => {
   );
 };
 
-const Sidebar = () => {
+const NavigationSidebar = () => {
   const router = useRouter();
 
   const menuItems = [
