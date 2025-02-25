@@ -72,7 +72,7 @@ const ScoringResult = () => {
     fetchData();
   }, []);
 
-  const filteredResults = searchResults.filter(result =>
+  const filteredResults = searchResults.filter((result: ScoringResultType) =>
     result.user_id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
