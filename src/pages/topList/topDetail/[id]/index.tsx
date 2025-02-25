@@ -41,7 +41,7 @@ const TopDetail = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, supabase]);
 
   if (loading) {
     return (

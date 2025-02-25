@@ -1,5 +1,3 @@
-
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import Anthropic from '@anthropic-ai/sdk';
 import { OpenAI } from 'openai';
 
