@@ -5,6 +5,35 @@ export type Json = string | number | boolean | null | { [key: string]: Json } | 
 export type Database = {
   public: {
     Tables: {
+      health_check_results: {
+        Row: {
+          id: string;
+          bmi_score: number;
+          blood_pressure_score: number;
+          blood_sugar_score: number;
+          lipid_score: number;
+          liver_function_score: number;
+          total_score: number;
+        };
+        Insert: {
+          id?: string;
+          bmi_score: number;
+          blood_pressure_score: number;
+          blood_sugar_score: number;
+          lipid_score: number;
+          liver_function_score: number;
+          total_score: number;
+        };
+        Update: {
+          id?: string;
+          bmi_score?: number;
+          blood_pressure_score?: number;
+          blood_sugar_score?: number;
+          lipid_score?: number;
+          liver_function_score?: number;
+          total_score?: number;
+        };
+      };
       logs: {
         Row: {
           id: number;
