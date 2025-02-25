@@ -56,19 +56,25 @@ export default async function handler(
       });
     }
 
-    // 必要なカラムの存在チェック
-    const requiredColumns = [
-      'ID', 'BMI', 'sBP', 'dBP', 'BS', 'HbA1c',
-      'LDL', 'TG', 'AST', 'ALT', 'γGTP'  // GTPをγGTPに変更
-    ];
-
     const firstRow = data[0];
     console.log('First row:', firstRow);
     console.log('Available columns:', Object.keys(firstRow));
 
+    // 必要なカラムの存在チェック
+    const requiredColumns = [
+      'ID', 'BMI', 'sBP', 'dBP', 'BS', 'HbA1c',
+      'LDL', 'TG', 'AST', 'ALT'
+    ];
+    
     const missingColumns = requiredColumns.filter(
       col => !(col in firstRow)
     );
+    
+    // GTPまたはγGTPのどちらかが存在するか確認
+    const hasGTP = 'GTP' in firstRow || 'γGTP' in firstRow;
+    if (!hasGTP) {
+      missingColumns.push('GTP/γGTP');
+    }
 
     if (missingColumns.length > 0) {
       return res.status(400).json({
@@ -82,11 +88,13 @@ export default async function handler(
     try {
       const scoringResults: ScoringResult[] = data.map((row, index) => {
         console.log(`Processing row ${index}:`, row);
-        // GTPをγGTPに変更してデータを渡す
-        const processedRow = {
-          ...row,
-          GTP: row['γGTP']  // γGTPの値をGTPとしても提供
-        };
+        // GTPとγGTPの処理を統一
+        const processedRow = { ...row };
+        if ('γGTP' in row) {
+          processedRow.GTP = row['γGTP'];
+        } else if ('GTP' in row) {
+          processedRow['γGTP'] = row.GTP;
+        }
         const result = generateScoringResult(processedRow);
         console.log(`Generated result for row ${index}:`, result);
         return result;
