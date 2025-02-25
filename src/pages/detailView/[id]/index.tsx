@@ -65,7 +65,7 @@ const DetailView = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, supabase]);
 
   if (loading) return <Layout><div className="min-h-screen h-full flex justify-center items-center">Loading...</div></Layout>;
   if (error) return  <Layout><div className="min-h-screen h-full flex justify-center items-center text-red-500">Error: {error}</div></Layout>;
