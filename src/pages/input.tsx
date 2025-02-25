@@ -60,7 +60,7 @@ export default function Input() {
           throw new Error('CSVファイルに無効な数値データが含まれています');
         }
 
-        // 基本データのみを保存
+        // 基本データとスコアリング情報を保存
         const data = {
           id: uuidv4(),
           user_id: 'default_user',
@@ -74,7 +74,19 @@ export default function Input() {
           ast: parseInt(values[9]),
           alt: parseInt(values[10]),
           gamma_gtp: parseInt(values[11]),
-          created_at: new Date().toISOString()
+          created_at: new Date().toISOString(),
+          // デフォルトのスコアと評価を追加
+          bmi_score: 0,
+          blood_pressure_score: 0,
+          blood_sugar_score: 0,
+          lipid_score: 0,
+          liver_function_score: 0,
+          total_score: 0,
+          bmi_evaluation: 'C',
+          blood_pressure_evaluation: 'C',
+          blood_sugar_evaluation: 'C',
+          lipid_evaluation: 'C',
+          liver_function_evaluation: 'C'
         };
 
         console.log('Inserting data:', data);
