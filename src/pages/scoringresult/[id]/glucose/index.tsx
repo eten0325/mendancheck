@@ -1,21 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { supabase } from '@/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Database } from '@/supabase/types';
 import Layout from '@/components/Layout';
 
 const GlucoseDetailPage = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [healthCheckResult, setHealthCheckResult] = useState(null);
+  const supabase = createClientComponentClient<Database>();
+  const [healthCheckResult, setHealthCheckResult] = useState<Database['public']['Tables']['health_check_results']['Row'] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (id) {
+    if (typeof id === 'string') {
       fetchHealthCheckResult(id);
     }
-  }, [id]);
+  }, [id, supabase]);
 
   const fetchHealthCheckResult = async (id: string) => {
     setLoading(true);

@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Layout } from '../../components/Layout';
+import Layout from '@/components/Layout';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Database } from '@/supabase/types';
 
 const LipidEvaluationDetail = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [lipidData, setLipidData] = useState(null);
+  const supabase = createClientComponentClient<Database>();
+  const [lipidData, setLipidData] = useState<Database['public']['Tables']['health_check_results']['Row'] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const supabase = createClientComponentClient();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,22 +30,18 @@ const LipidEvaluationDetail = () => {
 
         if (error) {
           console.error('データ取得エラー:', error);
-          setError(error);
+          setError(error.message);
         }
 
         if (data) {
           setLipidData(data);
         } else {
-          setLipidData({
-            ldl_cholesterol: 120,
-            tg: 150,
-            lipid_evaluation: '要経過観察',
-          });
+          setLipidData(null);
         }
 
       } catch (e: any) {
         console.error('エラー:', e);
-        setError(e);
+        setError(e.message);
       } finally {
         setLoading(false);
       }
@@ -69,7 +66,7 @@ const LipidEvaluationDetail = () => {
     return (
       <Layout>
         <div className="min-h-screen h-full flex justify-center items-center">
-          エラー: {error.message}
+          エラー: {error}
         </div>
       </Layout>
     );

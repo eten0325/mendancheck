@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Layout } from '@/components/Layout';
+import Layout from '@/components/Layout';
 import axios from 'axios';
+
+interface TotalScoreData {
+  total_score: number;
+  bmi_score: number;
+  blood_pressure_score: number;
+  blood_sugar_score: number;
+  lipid_score: number;
+  liver_function_score: number;
+}
 
 const TotalScorePage = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [totalScoreData, setTotalScoreData] = useState(null);
+  const [totalScoreData, setTotalScoreData] = useState<TotalScoreData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTotalScoreData = async () => {
@@ -73,7 +82,9 @@ const TotalScorePage = () => {
           <p className="text-gray-700">肝機能スコア: {totalScoreData?.liver_function_score}</p>
 
           <h2 className="text-lg font-semibold mt-4 mb-2">総合評価</h2>
-          <p className="text-gray-700">総合評価: {totalScoreData?.total_score > 80 ? 'A' : totalScoreData?.total_score > 60 ? 'B' : 'C'}</p>
+          <p className="text-gray-700">
+            総合評価: {totalScoreData && (totalScoreData.total_score > 80 ? 'A' : totalScoreData.total_score > 60 ? 'B' : 'C')}
+          </p>
         </div>
       </div>
     </Layout>

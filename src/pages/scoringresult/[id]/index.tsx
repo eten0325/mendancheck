@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '@/components/Layout';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Database } from '@/supabase/types';
 import { FaArrowLeft } from 'react-icons/fa';
 
 const ScoringResultDetail = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [healthCheckResult, setHealthCheckResult] = useState(null);
-  const supabase = createClientComponentClient();
+  const [healthCheckResult, setHealthCheckResult] = useState<Database['public']['Tables']['health_check_results']['Row'] | null>(null);
+  const supabase = createClientComponentClient<Database>();
 
   useEffect(() => {
     const fetchData = async () => {
