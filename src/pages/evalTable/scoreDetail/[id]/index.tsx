@@ -20,7 +20,7 @@ const ScoreDetail = () => {
         if (id) {
           const { data, error } = await supabase
             .from('health_check_results')
-            .select('id, bmi_score, blood_pressure_score, blood_sugar_score, lipid_score, liver_function_score, total_score')
+            .select('*')
             .eq('id', id)
             .single();
 
@@ -37,7 +37,7 @@ const ScoreDetail = () => {
     };
 
     fetchScoreData();
-  }, [id]);
+  }, [id, supabase]);
 
   if (loading) {
     return (
