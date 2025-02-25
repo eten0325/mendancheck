@@ -14,12 +14,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const data = req.body;
     
-    // total_scoreが存在しない場合はデフォルト値を設定
-    if (data.total_score === undefined || data.total_score === null) {
-      // 必要に応じてスコアを計算する
-      // 例：各評価項目のスコアの合計など
-      data.total_score = 0;  // または適切な計算値
-    }
+    console.log("保存データ（変更前）:", JSON.stringify(data));
+    
+    // 全てのnullフィールドにデフォルト値を設定
+    Object.keys(data).forEach(key => {
+      if (data[key] === null || data[key] === undefined) {
+        if (key === 'total_score') {
+          data[key] = 0;
+        }
+      }
+    });
+    
+    console.log("保存データ（変更後）:", JSON.stringify(data));
     
     const { data: result, error } = await supabase
       .from('health_check_results')
