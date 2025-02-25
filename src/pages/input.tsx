@@ -4,6 +4,19 @@ import Layout from '@/components/Layout';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Database } from '@/supabase/types';
 
+interface HealthCheckData {
+  bmi: number;
+  systolic_blood_pressure: number;
+  diastolic_blood_pressure: number;
+  blood_sugar: number;
+  hba1c: number;
+  ldl_cholesterol: number;
+  tg: number;
+  ast: number;
+  alt: number;
+  gamma_gtp: number;
+}
+
 export default function Input() {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
@@ -23,6 +36,39 @@ export default function Input() {
     }
   };
 
+  const processCSV = async (csvData: string) => {
+    const lines = csvData.split('\n');
+    const headers = lines[0].split(',');
+    const dataRows = lines.slice(1).filter(line => line.trim());
+
+    for (const row of dataRows) {
+      const values = row.split(',');
+      const data: HealthCheckData = {
+        bmi: parseFloat(values[2]),
+        systolic_blood_pressure: parseInt(values[3]),
+        diastolic_blood_pressure: parseInt(values[4]),
+        blood_sugar: parseInt(values[5]),
+        hba1c: parseFloat(values[6]),
+        ldl_cholesterol: parseInt(values[7]),
+        tg: parseInt(values[8]),
+        ast: parseInt(values[9]),
+        alt: parseInt(values[10]),
+        gamma_gtp: parseInt(values[11])
+      };
+
+      // Supabaseにデータを保存
+      const { error } = await supabase
+        .from('health_check_results')
+        .insert([{
+          ...data,
+          user_id: 'default_user', // または適切なユーザーID
+          created_at: new Date().toISOString()
+        }]);
+
+      if (error) throw error;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!file) {
@@ -35,10 +81,8 @@ export default function Input() {
       const reader = new FileReader();
       reader.onload = async (event) => {
         const csvData = event.target?.result as string;
-        // CSVデータの処理とSupabaseへの保存ロジックをここに実装
-        console.log('CSV Data:', csvData);
-        // 成功したらホームに戻る
-        router.push('/');
+        await processCSV(csvData);
+        router.push('/scoringresult');
       };
       reader.readAsText(file);
     } catch (err: any) {
