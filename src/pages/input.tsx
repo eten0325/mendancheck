@@ -52,13 +52,14 @@ export default function Input() {
       for (const row of dataRows) {
         const values = row.split(',');
         
-        // 数値データの検証を先に行う
+        // 数値データの検証
         const numericValues = values.slice(2).map(val => val.trim());
         if (numericValues.some(val => val === '' || isNaN(Number(val)))) {
           throw new Error('CSVファイルに無効な数値データが含まれています');
         }
 
-        const baseData = {
+        // 基本データのみを保存
+        const data = {
           bmi: parseFloat(values[2]),
           systolic_blood_pressure: parseInt(values[3]),
           diastolic_blood_pressure: parseInt(values[4]),
@@ -68,33 +69,15 @@ export default function Input() {
           tg: parseInt(values[8]),
           ast: parseInt(values[9]),
           alt: parseInt(values[10]),
-          gamma_gtp: parseInt(values[11])
-        };
-
-        // データの検証を削除（上で行うため）
-        const data: HealthCheckData = {
-          ...baseData,
-          bmi_score: 80,
-          blood_pressure_score: 85,
-          blood_sugar_score: 90,
-          lipid_score: 85,
-          liver_function_score: 88,
-          total_score: 428,
-          bmi_evaluation: 'B',
-          blood_pressure_evaluation: 'A',
-          blood_sugar_evaluation: 'A',
-          lipid_evaluation: 'B',
-          liver_function_evaluation: 'A'
+          gamma_gtp: parseInt(values[11]),
+          user_id: 'default_user',
+          created_at: new Date().toISOString()
         };
 
         // Supabaseにデータを保存
         const { error: insertError } = await supabase
           .from('health_check_results')
-          .insert([{
-            ...data,
-            user_id: 'default_user',
-            created_at: new Date().toISOString()
-          }])
+          .insert([data])
           .select();
 
         if (insertError) {
