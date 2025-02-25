@@ -14,7 +14,7 @@ interface HealthCheckData {
   tg: number;
   ast: number;
   alt: number;
-  gamma_gtp: number;
+  gtp: number;
 }
 
 export default function Input() {
@@ -27,45 +27,54 @@ export default function Input() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      if (selectedFile.type !== 'text/csv') {
-        setError('CSVファイルのみアップロード可能です');
-        return;
-      }
       setFile(selectedFile);
       setError(null);
     }
   };
 
   const processCSV = async (csvData: string) => {
-    const lines = csvData.split('\n');
-    const headers = lines[0].split(',');
-    const dataRows = lines.slice(1).filter(line => line.trim());
+    try {
+      const lines = csvData.trim().split('\n');
+      const headers = lines[0].split(',');
+      const dataRows = lines.slice(1).filter(line => line.trim());
 
-    for (const row of dataRows) {
-      const values = row.split(',');
-      const data: HealthCheckData = {
-        bmi: parseFloat(values[2]),
-        systolic_blood_pressure: parseInt(values[3]),
-        diastolic_blood_pressure: parseInt(values[4]),
-        blood_sugar: parseInt(values[5]),
-        hba1c: parseFloat(values[6]),
-        ldl_cholesterol: parseInt(values[7]),
-        tg: parseInt(values[8]),
-        ast: parseInt(values[9]),
-        alt: parseInt(values[10]),
-        gamma_gtp: parseInt(values[11])
-      };
+      for (const row of dataRows) {
+        const values = row.split(',');
+        const data: HealthCheckData = {
+          bmi: parseFloat(values[2]),
+          systolic_blood_pressure: parseInt(values[3]),
+          diastolic_blood_pressure: parseInt(values[4]),
+          blood_sugar: parseInt(values[5]),
+          hba1c: parseFloat(values[6]),
+          ldl_cholesterol: parseInt(values[7]),
+          tg: parseInt(values[8]),
+          ast: parseInt(values[9]),
+          alt: parseInt(values[10]),
+          gtp: parseInt(values[11])
+        };
 
-      // Supabaseにデータを保存
-      const { error } = await supabase
-        .from('health_check_results')
-        .insert([{
-          ...data,
-          user_id: 'default_user', // または適切なユーザーID
-          created_at: new Date().toISOString()
-        }]);
+        // データの検証
+        if (Object.values(data).some(value => isNaN(value))) {
+          throw new Error('CSVファイルの数値データが不正です');
+        }
 
-      if (error) throw error;
+        // Supabaseにデータを保存
+        const { error: insertError } = await supabase
+          .from('health_check_results')
+          .insert([{
+            ...data,
+            user_id: (await supabase.auth.getUser()).data.user?.id || 'default_user',
+            created_at: new Date().toISOString()
+          }]);
+
+        if (insertError) {
+          console.error('データ保存エラー:', insertError);
+          throw new Error('データの保存に失敗しました');
+        }
+      }
+    } catch (err) {
+      console.error('CSV処理エラー:', err);
+      throw err;
     }
   };
 
@@ -79,15 +88,26 @@ export default function Input() {
     setLoading(true);
     try {
       const reader = new FileReader();
+      
       reader.onload = async (event) => {
-        const csvData = event.target?.result as string;
-        await processCSV(csvData);
-        router.push('/scoringresult');
+        try {
+          const csvData = event.target?.result as string;
+          await processCSV(csvData);
+          router.push('/scoringresult');
+        } catch (err: any) {
+          setError(err.message || 'CSVの処理中にエラーが発生しました');
+          setLoading(false);
+        }
       };
+
+      reader.onerror = () => {
+        setError('ファイルの読み込みに失敗しました');
+        setLoading(false);
+      };
+
       reader.readAsText(file);
     } catch (err: any) {
       setError(err.message);
-    } finally {
       setLoading(false);
     }
   };
