@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Layout } from './Layout';
-import { Header } from './Header';
+import Layout from '@/components/Layout';
+import Header from '@/components/Header';
 
 const TopList = () => {
   const [userIds, setUserIds] = useState<string[]>([]);

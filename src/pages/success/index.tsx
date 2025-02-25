@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import Layout from './Layout';
+import Layout from '@/components/Layout';
 
 const Success = () => {
   const router = useRouter();

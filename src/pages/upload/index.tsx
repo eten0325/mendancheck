@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FaFileUpload } from 'react-icons/fa';
-import Header from './Header';
-import Footer from './Footer';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import axios from 'axios';
 
 const Upload = () => {

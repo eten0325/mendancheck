@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Header } from './header';
-import { Footer } from './footer';
-import { Sidebar } from './sidebar';
+import Header from '@/components/Header';
+import Sidebar from '@/components/Sidebar';
 
 const ParamSetting = () => {
   const [extractionRatio, setExtractionRatio] = useState<number | null>(null);

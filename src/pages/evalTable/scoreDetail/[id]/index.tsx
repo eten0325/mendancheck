@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Layout } from '../../../components/Layout';
-import { Header } from '../../../components/Header';
-import { supabase } from '../../../utils/supabaseClient';
+import Layout from '@/components/Layout';
+import Header from '@/components/Header';
+import { supabase } from '@/utils/supabaseClient';
 
 const ScoreDetail = () => {
   const router = useRouter();

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FaFileUpload, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
-import { Header } from './header';
-import { Footer } from './footer';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import axios from 'axios';
 
 const FileValidation = () => {

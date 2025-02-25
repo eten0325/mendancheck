@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { Layout } from '../../components/Layout';
-import { Header } from '../../components/Header';
+import Layout from '@/components/Layout';
+import Header from '@/components/Header';
 
 const TableFilter = () => {
   const [filterValue, setFilterValue] = useState('');
