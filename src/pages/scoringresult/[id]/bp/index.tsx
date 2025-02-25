@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Layout } from '../../components/Layout';
+import Layout from '@/components/Layout';
 import { supabase } from '@/supabase';
 import { GiBloodDrop } from 'react-icons/gi';
 
