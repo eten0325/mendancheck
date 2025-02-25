@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/router';
-import { Layout } from './Layout';
-import { Header } from './Header';
+import Layout from '@/components/Layout';
+import Header from '@/components/Header';
 
 const EvalTable = () => {
   const [healthCheckResults, setHealthCheckResults] = useState<any[]>([]);
