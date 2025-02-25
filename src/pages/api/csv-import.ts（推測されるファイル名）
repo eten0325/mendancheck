@@ -1,0 +1,29 @@
+// CSVデータを処理する関数内で、各行を処理する前に
+const parsedData = csvRows.map(row => {
+  // 各評価項目のスコアを計算
+  const bmiScore = calculateScore(row.bmi_evaluation);
+  const bpScore = calculateScore(row.bp_evaluation);
+  const glucoseScore = calculateScore(row.glucose_evaluation);
+  const lipidScore = calculateScore(row.lipid_evaluation);
+  const liverScore = calculateScore(row.liver_evaluation);
+  
+  // 合計スコアを計算
+  const totalScore = bmiScore + bpScore + glucoseScore + lipidScore + liverScore;
+  
+  return {
+    ...row,
+    total_score: totalScore // 必ずnumberの値を入れる
+  };
+});
+
+// 計算用ヘルパー関数（A=1, B=2, C=3, D=4, E=5など）
+function calculateScore(evaluation: string): number {
+  switch(evaluation) {
+    case 'A': return 1;
+    case 'B': return 2;
+    case 'C': return 3;
+    case 'D': return 4;
+    case 'E': return 5;
+    default: return 0; // デフォルト値
+  }
+} 
