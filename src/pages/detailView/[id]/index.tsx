@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Layout from '@/components/Layout';
 import Header from '@/components/Header';
-import { supabase } from '@/utils/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Database } from '@/supabase/types';
 
 interface HealthData {
   id: string;
@@ -30,6 +31,7 @@ const DetailView = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const id = searchParams.get('id');
+  const supabase = createClientComponentClient<Database>();
 
   useEffect(() => {
     const fetchData = async () => {
