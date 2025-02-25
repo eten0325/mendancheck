@@ -145,11 +145,11 @@ export default async function handler(
       const validatedResults = scoringResults.map(result => {
         // 必須フィールドが存在することを確認
         const data = {
-          ...result,
           // 各フィールドが存在することを確認し、存在しない場合はデフォルト値を設定
           id: result.id || `user-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
           user_id: result.user_id || `user-${Date.now()}`,
-          total_score: typeof result.total_score === 'number' ? result.total_score : 0,
+          // total_scoreを明示的に整数値として設定
+          total_score: Math.max(0, Math.floor(Number(result.total_score) || 0)),
           bmi: isNaN(result.bmi) ? 0 : result.bmi,
           bmi_evaluation: result.bmi_evaluation || 'A',
           systolic_blood_pressure: isNaN(result.systolic_blood_pressure) ? 0 : result.systolic_blood_pressure,
@@ -174,15 +174,35 @@ export default async function handler(
       
       console.log('Final data for DB insert:', validatedResults);
       
+      // 各レコードのtotal_scoreを確認
+      validatedResults.forEach((result, index) => {
+        console.log(`Record ${index} total_score:`, result.total_score, typeof result.total_score);
+      });
+      
       // Supabaseにデータを保存
-      const { error: insertError } = await supabase
-        .from('health_check_results')
-        .upsert(validatedResults);
-
-      if (insertError) {
-        console.error('Error inserting data:', insertError);
+      try {
+        // 1件ずつ挿入して、エラーが発生した場合はそのレコードをスキップ
+        for (let i = 0; i < validatedResults.length; i++) {
+          const record = validatedResults[i];
+          console.log(`Inserting record ${i}:`, record);
+          
+          const { error } = await supabase
+            .from('health_check_results')
+            .insert([record]);
+          
+          if (error) {
+            console.error(`Error inserting record ${i}:`, error);
+            console.error('Problematic record:', record);
+          } else {
+            console.log(`Successfully inserted record ${i}`);
+          }
+        }
+      } catch (insertError: any) {
+        console.error('Error during batch insert:', insertError);
         throw insertError;
       }
+
+      // 全てのレコードが正常に挿入されたことを確認
 
       return res.status(200).json({
         message: 'Data processed and saved successfully',
