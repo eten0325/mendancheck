@@ -2,16 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import Layout from '@/components/Layout';
+import { Database } from '@/supabase/types';
 
 const ResultUserId = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get('userId') || 'defaultUserId';
-  const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient<Database>();
 
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<Database['public']['Tables']['health_check_results']['Row'] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
