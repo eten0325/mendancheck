@@ -21,7 +21,10 @@ export default function SignUp() {
         },
       });
       if (error) throw error;
-      router.push('/dashboard');
+      setError('確認メールを送信しました。メールを確認してアカウントを有効化してください。');
+      setTimeout(() => {
+        router.push('/login');
+      }, 5000);
     } catch (error: any) {
       setError(error.message);
     }
@@ -30,8 +33,11 @@ export default function SignUp() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <div className="w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center">アカウント作成</h2>
         <form onSubmit={handleSignUp} className="space-y-4">
-          {error && <div className="text-red-500">{error}</div>}
+          {error && <div className={`p-4 rounded ${error.includes('確認メール') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+            {error}
+          </div>}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               メールアドレス
