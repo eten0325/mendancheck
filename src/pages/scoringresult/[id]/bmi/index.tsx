@@ -1,23 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Layout } from '@/components/Layout';
-import { supabase } from '@/supabase';
+import Layout from '@/components/Layout';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Database } from '@/supabase/types';
 
 const BMIDetail = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [bmiData, setBmiData] = useState(null);
+  const [bmiData, setBmiData] = useState<Database['public']['Tables']['health_check_results']['Row'] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+  const supabase = createClientComponentClient<Database>();
 
   useEffect(() => {
     if (id) {
-      fetchBmiData(id);
+      fetchBmiData(id as string);
     }
   }, [id]);
 
-  const fetchBmiData = async (id) => {
+  const fetchBmiData = async (id: string) => {
     try {
       setLoading(true);
       const { data, error } = await supabase
@@ -32,7 +34,7 @@ const BMIDetail = () => {
 
       setBmiData(data);
     } catch (err) {
-      setError(err.message || 'データの取得に失敗しました。');
+      setError(err instanceof Error ? err.message : 'データの取得に失敗しました。');
     } finally {
       setLoading(false);
     }
