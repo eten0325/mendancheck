@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '@/components/Layout';
-import { supabase } from '@/supabase';
-import { GiBloodDrop } from 'react-icons/gi';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Database } from '@/supabase/types';
+import { FaHeartbeat } from 'react-icons/fa';
 
 const BPDetails = () => {
   const router = useRouter();
   const { id } = router.query;
-  const [healthCheckResult, setHealthCheckResult] = useState(null);
+  const supabase = createClientComponentClient<Database>();
+  const [healthCheckResult, setHealthCheckResult] = useState<Database['public']['Tables']['health_check_results']['Row'] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchHealthCheckResult = async () => {
@@ -77,7 +79,7 @@ const BPDetails = () => {
       <div className="min-h-screen h-full bg-gray-100 py-6 flex flex-col justify-start items-center">
         <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-3xl">
           <div className="flex items-center justify-center mb-6">
-            <GiBloodDrop className="text-red-500 mr-2" size={32} />
+            <FaHeartbeat className="text-red-500 mr-2" size={32} />
             <h1 className="text-2xl font-semibold text-gray-700">血圧評価詳細</h1>
           </div>
 
