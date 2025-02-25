@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { FaArrowLeft } from 'react-icons/fa';
-import Layout from '../../components/Layout';
-import Header from '../../components/Header';
-import { supabase } from '../../utils/supabaseClient';
+import Layout from '@/components/Layout';
+import Header from '@/components/Header';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Database } from '@/supabase/types';
 
 const TableSort = () => {
   const router = useRouter();
+  const supabase = createClientComponentClient<Database>();
   const [selectedSortCondition, setSelectedSortCondition] = useState<string>('');
   const [sortConditions, setSortConditions] = useState<{
     id: string;
