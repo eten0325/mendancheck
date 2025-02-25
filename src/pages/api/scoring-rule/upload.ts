@@ -141,22 +141,43 @@ export default async function handler(
         }
       });
       
+      // 保存前に各レコードを検証
+      const validatedResults = scoringResults.map(result => {
+        // 必須フィールドが存在することを確認
+        const data = {
+          ...result,
+          // 各フィールドが存在することを確認し、存在しない場合はデフォルト値を設定
+          id: result.id || `user-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+          user_id: result.user_id || `user-${Date.now()}`,
+          total_score: typeof result.total_score === 'number' ? result.total_score : 0,
+          bmi: isNaN(result.bmi) ? 0 : result.bmi,
+          bmi_evaluation: result.bmi_evaluation || 'A',
+          systolic_blood_pressure: isNaN(result.systolic_blood_pressure) ? 0 : result.systolic_blood_pressure,
+          diastolic_blood_pressure: isNaN(result.diastolic_blood_pressure) ? 0 : result.diastolic_blood_pressure,
+          bp_evaluation: result.bp_evaluation || 'A',
+          blood_sugar: isNaN(result.blood_sugar) ? 0 : result.blood_sugar,
+          hba1c: isNaN(result.hba1c) ? 0 : result.hba1c,
+          glucose_evaluation: result.glucose_evaluation || 'A',
+          ldl_cholesterol: isNaN(result.ldl_cholesterol) ? 0 : result.ldl_cholesterol,
+          tg: isNaN(result.tg) ? 0 : result.tg,
+          lipid_evaluation: result.lipid_evaluation || 'A',
+          ast: isNaN(result.ast) ? 0 : result.ast,
+          alt: isNaN(result.alt) ? 0 : result.alt,
+          gamma_gtp: isNaN(result.gamma_gtp) ? 0 : result.gamma_gtp,
+          liver_evaluation: result.liver_evaluation || 'A',
+          created_at: new Date().toISOString(),
+        };
+        
+        console.log('Validated data for DB insert:', data);
+        return data;
+      });
+      
+      console.log('Final data for DB insert:', validatedResults);
+      
       // Supabaseにデータを保存
       const { error: insertError } = await supabase
         .from('health_check_results')
-        .upsert(
-          scoringResults.map(result => {
-            // 必須フィールドが存在することを確認
-            const data = {
-              ...result,
-              total_score: result.total_score || 0, // nullの場合は0を設定
-              created_at: new Date().toISOString(),
-            };
-            
-            // データベースのスキーマに合わせてフィールド名を変換
-            return data;
-          })
-        );
+        .upsert(validatedResults);
 
       if (insertError) {
         console.error('Error inserting data:', insertError);

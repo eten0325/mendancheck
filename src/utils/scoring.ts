@@ -31,8 +31,24 @@ export function generateScoringResult(data: Record<string, string>): ScoringResu
   const liverScore = calculateLiverScore(ast, alt, gtp);
   const liverEvaluation = evaluateLiver(ast, alt, gtp);
 
-  // 合計スコアの計算
-  const totalScore = bmiScore + bpScore + bsScore + lipidScore + liverScore;
+  // 合計スコアの計算（NaNの場合は0として扱う）
+  const bmiScoreValue = isNaN(bmiScore) ? 0 : bmiScore;
+  const bpScoreValue = isNaN(bpScore) ? 0 : bpScore;
+  const bsScoreValue = isNaN(bsScore) ? 0 : bsScore;
+  const lipidScoreValue = isNaN(lipidScore) ? 0 : lipidScore;
+  const liverScoreValue = isNaN(liverScore) ? 0 : liverScore;
+  
+  // 合計スコアを計算（最低でも0になるようにする）
+  const totalScore = Math.max(0, bmiScoreValue + bpScoreValue + bsScoreValue + lipidScoreValue + liverScoreValue);
+  
+  console.log('Calculated scores:', {
+    bmi: bmiScoreValue,
+    bp: bpScoreValue,
+    bs: bsScoreValue,
+    lipid: lipidScoreValue,
+    liver: liverScoreValue,
+    total: totalScore
+  });
 
   return {
     id: data.ID,
