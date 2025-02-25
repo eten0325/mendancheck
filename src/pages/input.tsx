@@ -51,6 +51,13 @@ export default function Input() {
 
       for (const row of dataRows) {
         const values = row.split(',');
+        
+        // 数値データの検証を先に行う
+        const numericValues = values.slice(2).map(val => val.trim());
+        if (numericValues.some(val => val === '' || isNaN(Number(val)))) {
+          throw new Error('CSVファイルに無効な数値データが含まれています');
+        }
+
         const baseData = {
           bmi: parseFloat(values[2]),
           systolic_blood_pressure: parseInt(values[3]),
@@ -64,7 +71,7 @@ export default function Input() {
           gtp: parseInt(values[11])
         };
 
-        // 仮のスコアリングと評価（実際のロジックに置き換えてください）
+        // データの検証を削除（上で行うため）
         const data: HealthCheckData = {
           ...baseData,
           bmi_score: 80,
@@ -79,11 +86,6 @@ export default function Input() {
           lipid_evaluation: 'B',
           liver_function_evaluation: 'A'
         };
-
-        // データの検証
-        if (Object.values(data).some(value => isNaN(value))) {
-          throw new Error('CSVファイルの数値データが不正です');
-        }
 
         // Supabaseにデータを保存
         const { error: insertError } = await supabase
